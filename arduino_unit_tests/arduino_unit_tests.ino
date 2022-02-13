@@ -13,7 +13,10 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting unit tests...");
-    checkSPIRead();
+    if(!checkSPIRead() || !checkSPIWrite())
+        Serial.println("CC1120 tests failed.");
+    else
+        Serial.println("All CC1120 tests passed.");
 }
 
 void loop() {

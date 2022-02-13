@@ -6,10 +6,6 @@
 #include <stdint.h>
 #include <SPI.h>
 
-extern "C" {
-
-
-
 uint8_t arduinoReadSPI(uint8_t addr, union cc_st *status) {
     digitalWrite(CS, LOW);
     status->v = SPI.transfer(RW_BIT | addr);
@@ -28,6 +24,4 @@ uint8_t arduinoReadExtAddrSPI(uint8_t addr) {
   digitalWrite(CS, HIGH);
   return v;
   */
-}
-
 }

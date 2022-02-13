@@ -3,10 +3,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define RW_BIT 1 << 7
 #define BURST_BIT 1 << 6
 
@@ -27,9 +23,5 @@ uint8_t arduinoWriteSPI(uint8_t addr, uint8_t data);
 uint8_t arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data);
 uint8_t arduinoStrobeSPI(uint8_t addr);
 uint8_t arduinoReadFIFO(uint8_t addr);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* SPI_CC1120_H */
