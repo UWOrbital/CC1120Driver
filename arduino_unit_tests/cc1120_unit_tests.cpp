@@ -6,7 +6,12 @@
 #include <stdint.h>
 
 static uint8_t REGS_DEFAULTS[EXT_ADDR];
+union cc_st ccstatus;
 
+/**
+ * @brief Set the default values for CC1120 registers.
+ * 
+ */
 void setRegisterDefaults() {
     REGS_DEFAULTS[IOCFG3] = 0x06;
     REGS_DEFAULTS[IOCFG2] = 0x07;
@@ -57,16 +62,21 @@ void setRegisterDefaults() {
     REGS_DEFAULTS[PKT_LEN] = 0x03;
 }
 
-uint8_t DEFAULT_STATUS_BYTE = 0x00;
-
-union cc_st ccstatus;
-
+/**
+ * @brief Unit test for SPI read function.
+ * 
+ * @return true - If all registers are read correctly.
+ * @return false - If any register is not read correctly,
+ *                 or status byte is invalid.
+ */
 bool checkSPIRead() {
     setRegisterDefaults();
     uint8_t addr = 0x00;
+    uint8_t data;
     
     while (addr < EXT_ADDR) {
-        uint8_t v = arduinoReadSPI(addr, &ccstatus);
+        if (!arduinoReadSPI(addr, &data))
+            return false;
 
         /* DEBUG
         Serial.print(addr);
@@ -76,14 +86,11 @@ bool checkSPIRead() {
         Serial.println(REGS_DEFAULTS[addr], HEX);
         */
         
-        if (ccstatus.ccst.chip_ready == 1) {
-            Serial.print("CC1120 chip not ready");
-            return false;
-        } else if (v != REGS_DEFAULTS[addr]) {
-            Serial.print("ERROR. CC1120 register ");
+        if (data != REGS_DEFAULTS[addr]) {
+            Serial.print("ERROR. CC1120 read test failed.\n Register ");
             Serial.print(addr, HEX);
             Serial.print(" read ");
-            Serial.print(v, HEX);
+            Serial.print(data, HEX);
             Serial.print(", expected ");
             Serial.println(REGS_DEFAULTS[addr], HEX);
             return false;
@@ -92,11 +99,41 @@ bool checkSPIRead() {
         }
     }
     
+    if (!arduinoReadExtAddrSPI(MARCSTATE, &data) || data != 0x41) {
+        Serial.print("ERROR. CC1120 read test failed.\n Extended address space register ");
+        Serial.print(MARCSTATE, HEX);
+        Serial.print(" read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0x41, HEX);
+        return false;
+    }
+
     Serial.println("CC1120 SPI read test passed");
 
     return true;
 }
 
 bool checkSPIWrite() {
-    return false;
+    uint8_t data;
+    if (!(arduinoWriteSPI(FREQOFF0, 0xFF) && arduinoReadSPI(FREQOFF0, &data) && data == 0xFF)) {
+        Serial.println("ERROR. CC1120 SPI write test failed");
+        Serial.println("FREQOFF0 read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0xFF, HEX);
+        return false;
+    }
+    
+    if (!(arduinoWriteExtAddrSPI(RNDGEN, 0xFF) && arduinoReadSPI(RNDGEN, &data) && data == 0xFF)) {
+        Serial.println("ERROR. CC1120 SPI write test failed");
+        Serial.println("RNDGEN read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0xFF, HEX);
+        return false;
+    }
+    
+    Serial.println("CC1120 SPI write test passed");
+    return true;
 }

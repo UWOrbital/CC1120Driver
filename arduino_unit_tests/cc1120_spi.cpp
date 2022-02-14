@@ -6,22 +6,63 @@
 #include <stdint.h>
 #include <SPI.h>
 
-uint8_t arduinoReadSPI(uint8_t addr, union cc_st *status) {
+bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
+    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    status->v = SPI.transfer(RW_BIT | addr);
-    uint8_t v = SPI.transfer(0x00);
+    ccstatus.v = SPI.transfer(R_BIT | addr);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.print("CC1120 chip not ready");
+        return false;
+    }
+    *data = SPI.transfer(0x00);
     digitalWrite(CS, HIGH);
-    return v;
+    return true;
 }
 
-uint8_t arduinoReadExtAddrSPI(uint8_t addr) {
-  /*
-  uint8_t v;
-  digitalWrite(CS, LOW);
-  ccstatus.v = SPI.transfer(RW_BIT | EXT_ADDR);
-  SPI.transfer(addr);
-  v = SPI.transfer(0xff);
-  digitalWrite(CS, HIGH);
-  return v;
-  */
+bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
+    union cc_st ccstatus;
+    digitalWrite(CS, LOW);
+    ccstatus.v = SPI.transfer(R_BIT | EXT_ADDR);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.print("CC1120 chip not ready");
+        return false;
+    }
+    SPI.transfer(addr);
+    *data = SPI.transfer(0xff);
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
+    union cc_st ccstatus;
+    digitalWrite(CS, LOW);
+    ccstatus.v = SPI.transfer(W_BIT | addr);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.print("CC1120 chip not ready");
+        return false;
+    }
+    SPI.transfer(data);
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
+    union cc_st ccstatus;
+    digitalWrite(CS, LOW);
+    ccstatus.v = SPI.transfer(W_BIT | EXT_ADDR);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.print("CC1120 chip not ready");
+        return false;
+    }
+    if (SPI.transfer(addr) != 0x00) {
+        Serial.print("CC1120 write ext addr failed");
+        return false;
+    }
+    ccstatus.v = SPI.transfer(data);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.print("CC1120 chip not ready");
+        return false;
+    }
+    digitalWrite(CS, HIGH);
+    return true;
 }

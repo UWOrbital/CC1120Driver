@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+void setRegisterDefaults();
 bool checkSPIRead();
 bool checkSPIWrite();
 

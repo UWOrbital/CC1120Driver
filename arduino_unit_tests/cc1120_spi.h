@@ -2,8 +2,10 @@
 #define SPI_CC1120_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
-#define RW_BIT 1 << 7
+#define R_BIT 1 << 7
+#define W_BIT 0 << 7
 #define BURST_BIT 1 << 6
 
 struct cc_status {
@@ -17,11 +19,11 @@ union cc_st {
   uint8_t v;
 };
 
-uint8_t arduinoReadSPI(uint8_t addr, union cc_st *status);
-uint8_t arduinoReadExtAddrSPI(uint8_t addr);
-uint8_t arduinoWriteSPI(uint8_t addr, uint8_t data);
-uint8_t arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data);
-uint8_t arduinoStrobeSPI(uint8_t addr);
-uint8_t arduinoReadFIFO(uint8_t addr);
+bool arduinoReadSPI(uint8_t addr, uint8_t *data);
+bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data);
+bool arduinoWriteSPI(uint8_t addr, uint8_t data);
+bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data);
+bool arduinoStrobeSPI(uint8_t addr);
+bool arduinoReadFIFO(uint8_t addr, uint8_t *data);
 
 #endif /* SPI_CC1120_H */
