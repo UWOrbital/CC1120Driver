@@ -31,7 +31,7 @@ void setup() {
     status &= checkSPIWrite();
     status &= checkStrobe();
     if(!status)
-        Serial.println("CC1120 tests failed.");
+        Serial.println("CC1120 tests failed. Please try grounding RST and pulling it high again.");
     else
         Serial.println("All CC1120 tests passed.");
 }
