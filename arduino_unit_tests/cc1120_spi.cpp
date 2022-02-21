@@ -134,6 +134,46 @@ bool arduinoStrobeSPI(uint8_t addr) {
 }
 
 /**
+ * @brief Reads from FIFO RX queue on the CC1120.
+ * 
+ * @param data - Pointer to the variable to store the read data.
+ * @return true - If the read was successful.
+ * @return false - If the status byte is invalid.
+ */
+bool arduinoReadFIFO(uint8_t *data) {
+    union cc_st ccstatus;
+    digitalWrite(CS, LOW);
+    ccstatus.v = SPI.transfer(R_BIT | REG_FIFO_ACCESS);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.println("CC1120 chip not ready");
+        return false;
+    }
+    *data = SPI.transfer(0xff);
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
+ * @brief Writes to FIFO TX queue on the CC1120.
+ * 
+ * @param data - The data to write to the FIFO.
+ * @return true - If the write was successful.
+ * @return false - If the status byte is invalid.
+ */
+bool arduinoWriteFIFO(uint8_t data) {
+    union cc_st ccstatus;
+    digitalWrite(CS, LOW);
+    ccstatus.v = SPI.transfer(REG_FIFO_ACCESS);
+    if (ccstatus.ccst.chip_ready == 1) {
+        Serial.println("CC1120 chip not ready");
+        return false;
+    }
+    SPI.transfer(data);
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
  * @brief Reads directly from the FIFO on the CC1120.
  * 
  * @param addr - The address of the register to read. Range 0x00 - 0xFF.

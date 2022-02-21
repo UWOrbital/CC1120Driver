@@ -83,7 +83,7 @@ bool checkSPIRead() {
         /* DEBUG
         Serial.print(addr);
         Serial.print(" : ");
-        Serial.println(v, HEX);
+        Serial.println(data, HEX);
         Serial.print("Expected: ");
         Serial.println(REGS_DEFAULTS[addr], HEX);
         */
