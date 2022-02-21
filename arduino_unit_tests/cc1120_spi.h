@@ -23,8 +23,8 @@ bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data);
 bool arduinoWriteSPI(uint8_t addr, uint8_t data);
 bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data);
 bool arduinoStrobeSPI(uint8_t addr);
-bool arduinoReadFIFO(uint8_t *data, uint8_t len);
-bool arduinoWriteFIFO(uint8_t *data, uint8_t len);
+bool arduinoReadFIFO(uint8_t *data);
+bool arduinoWriteFIFO(uint8_t *data);
 bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data);
 bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data);
 
