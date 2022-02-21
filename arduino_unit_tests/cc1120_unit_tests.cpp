@@ -137,3 +137,18 @@ bool checkSPIWrite() {
     Serial.println("CC1120 SPI write test passed");
     return true;
 }
+
+bool checkStrobe() {
+    uint8_t data;
+    if (!(arduinoStrobeSPI(SRES) && arduinoReadSPI(MARCSTATE, &data) || data != 0x41)) {
+        Serial.println("ERROR. CC1120 SPI strobe test failed");
+        Serial.println("MARCSTATE read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0x41, HEX);
+        return false;
+    }
+    
+    Serial.println("CC1120 SPI strobe test passed");
+    return true;    
+}
