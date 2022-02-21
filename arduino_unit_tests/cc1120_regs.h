@@ -66,9 +66,9 @@
 #define SNOP                0x3D
 
 #define DIR_FIFO_ACCESS     0x3E
-#define FIFO_WRITE_START    0x00
-#define FIFO_WRITE_END      0x7F
-#define FIFO_READ_START     0x80
-#define FIFO_READ_END       0xFF
+#define FIFO_TX_START    0x00
+#define FIFO_TX_END      0x7F
+#define FIFO_RX_START     0x80
+#define FIFO_RX_END       0xFF
 
 #endif /* REGS_CC1120_H */

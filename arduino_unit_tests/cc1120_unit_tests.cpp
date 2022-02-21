@@ -64,9 +64,11 @@ void setRegisterDefaults() {
 
 /**
  * @brief Unit test for SPI read function.
+ * Reads through all registers up to the extended register space,
+ * and compares values to default values.
  * 
- * @return true - If all registers are read correctly.
- * @return false - If any register is not read correctly,
+ * @return true - If all registers are read correctly and have the right value.
+ * @return false - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
 bool checkSPIRead() {
@@ -114,6 +116,15 @@ bool checkSPIRead() {
     return true;
 }
 
+/**
+ * @brief Unit test for SPI write function.
+ * Writes to frequency offset register and extended address space RNDGEN register.
+ * Reads the registers to see if the write was successful.
+ * 
+ * @return true - If both writes are successful.
+ * @return false - If any register does not have the expected value,
+ *                 or status byte is invalid.
+ */
 bool checkSPIWrite() {
     uint8_t data;
     if (!(arduinoWriteSPI(FREQOFF0, 0xFF) && arduinoReadSPI(FREQOFF0, &data) && data == 0xFF)) {
@@ -138,6 +149,13 @@ bool checkSPIWrite() {
     return true;
 }
 
+/**
+ * @brief Unit test for SPI strobe functionality.
+ * Runs the reset strobe and checks the MARCSTATE register.
+ * 
+ * @return true - If MARCSTATE is 0x41 after reset.
+ * @return false - If MARCSTATE is not 0x41 after reset, or status byte is invalid.
+ */
 bool checkStrobe() {
     uint8_t data;
     if (!(arduinoStrobeSPI(SRES) && arduinoReadSPI(MARCSTATE, &data) || data != 0x41)) {
