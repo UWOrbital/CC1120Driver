@@ -89,7 +89,7 @@ bool checkSPIRead() {
         */
         
         if (data != REGS_DEFAULTS[addr]) {
-            Serial.print("ERROR. CC1120 read test failed.\n Register ");
+            Serial.println("ERROR. CC1120 read test failed.");
             Serial.print(addr, HEX);
             Serial.print(" read ");
             Serial.print(data, HEX);
@@ -101,10 +101,12 @@ bool checkSPIRead() {
         }
     }
     
-    if (!arduinoReadExtAddrSPI(MARCSTATE, &data) || data != 0x41) {
-        Serial.print("ERROR. CC1120 read test failed.\n Extended address space register ");
-        Serial.print(MARCSTATE, HEX);
-        Serial.print(" read ");
+    if (!arduinoReadExtAddrSPI(MARCSTATE, &data)) {
+        Serial.println("ERROR. CC1120 read test failed.");
+        return false;
+    } else if (data != 0x41) {
+        Serial.println("ERROR. CC1120 read test failed.");
+        Serial.print("MARCSTATE read ");
         Serial.print(data, HEX);
         Serial.print(", expected ");
         Serial.println(0x41, HEX);
@@ -127,21 +129,27 @@ bool checkSPIRead() {
  */
 bool checkSPIWrite() {
     uint8_t data;
-    if (!(arduinoWriteSPI(FREQOFF0, 0xFF) && arduinoReadSPI(FREQOFF0, &data) && data == 0xFF)) {
+    if (!arduinoWriteSPI(FREQOFF0, 0xFF) || !arduinoReadSPI(FREQOFF0, &data)) {
+        Serial.println("ERROR. CC1120 write test failed.");
+        return false;
+    } else if (data != 0xFF) {
         Serial.println("ERROR. CC1120 SPI write test failed");
-        Serial.println("FREQOFF0 read ");
+        Serial.print("FREQOFF0 read ");
         Serial.print(data, HEX);
         Serial.print(", expected ");
         Serial.println(0xFF, HEX);
         return false;
     }
-    
-    if (!(arduinoWriteExtAddrSPI(RNDGEN, 0xFF) && arduinoReadSPI(RNDGEN, &data) && data == 0xFF)) {
+
+    if (!arduinoWriteExtAddrSPI(FREQ1, 0x80) || !arduinoReadExtAddrSPI(FREQ1, &data)) {
         Serial.println("ERROR. CC1120 SPI write test failed");
-        Serial.println("RNDGEN read ");
+        return false;
+    } else if (data != 0x80) {
+        Serial.println("ERROR. CC1120 SPI write test failed");
+        Serial.print("FREQ1 read ");
         Serial.print(data, HEX);
         Serial.print(", expected ");
-        Serial.println(0xFF, HEX);
+        Serial.println(0x80, HEX);
         return false;
     }
     
@@ -158,7 +166,9 @@ bool checkSPIWrite() {
  */
 bool checkStrobe() {
     uint8_t data;
-    if (!(arduinoStrobeSPI(SRES) && arduinoReadSPI(MARCSTATE, &data) || data != 0x41)) {
+    if (!arduinoStrobeSPI(SRES) || !arduinoReadExtAddrSPI(MARCSTATE, &data)) {
+        Serial.println("ERROR. CC1120 SPI strobe test failed");
+    } else if (data != 0x41) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
         Serial.println("MARCSTATE read ");
         Serial.print(data, HEX);

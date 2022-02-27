@@ -22,9 +22,8 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
 
     union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(R_BIT | addr);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(R_BIT | addr)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     *data = SPI.transfer(0x00);
@@ -41,15 +40,13 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(R_BIT | EXT_ADDR);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(R_BIT | EXT_ADDR)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(addr);
-    *data = SPI.transfer(0xff);
+    *data = SPI.transfer(0xFF);
     digitalWrite(CS, HIGH);
     return true;
 }
@@ -68,11 +65,9 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
         return false;
     }
 
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(addr);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(addr)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(data);
@@ -89,20 +84,18 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(EXT_ADDR);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(EXT_ADDR)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     if (SPI.transfer(addr) != 0x00) {
         Serial.println("CC1120 write ext addr failed");
+        digitalWrite(CS, HIGH);
         return false;
     }
-    ccstatus.v = SPI.transfer(data);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(data)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     digitalWrite(CS, HIGH);
@@ -122,11 +115,9 @@ bool arduinoStrobeSPI(uint8_t addr) {
         return false;
     }
 
-    union cc_st ccstatus;
-    digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(addr);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    digitalWrite(CS, LOW);    
+    if (!sendByteReceiveStatus(addr)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     digitalWrite(CS, HIGH);
@@ -141,11 +132,9 @@ bool arduinoStrobeSPI(uint8_t addr) {
  * @return false - If the status byte is invalid.
  */
 bool arduinoReadFIFO(uint8_t *data) {
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(R_BIT | REG_FIFO_ACCESS);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(R_BIT | REG_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     *data = SPI.transfer(0xff);
@@ -161,11 +150,9 @@ bool arduinoReadFIFO(uint8_t *data) {
  * @return false - If the status byte is invalid.
  */
 bool arduinoWriteFIFO(uint8_t data) {
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(REG_FIFO_ACCESS);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(REG_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(data);
@@ -187,11 +174,9 @@ bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
         return false;
     }
 
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(DIR_FIFO_ACCESS);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(addr);
@@ -214,15 +199,31 @@ bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data) {
         return false;
     }
 
-    union cc_st ccstatus;
     digitalWrite(CS, LOW);
-    ccstatus.v = SPI.transfer(DIR_FIFO_ACCESS);
-    if (ccstatus.ccst.chip_ready == 1) {
-        Serial.println("CC1120 chip not ready");
+    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(addr);
     SPI.transfer(data);
     digitalWrite(CS, HIGH);
     return true;
+}
+
+bool sendByteReceiveStatus(uint8_t data) {
+    union cc_st ccstatus;
+
+    uint8_t i=1;
+    for (; i <= 5; i++) {
+        ccstatus.v = SPI.transfer(data);
+        if (ccstatus.ccst.chip_ready == 1) {
+            Serial.print("CC1120 chip not ready. Retrying... (");
+            Serial.print(i);
+            Serial.println("/5)");
+        } else {
+            return true;
+        }
+    }
+
+    return false;
 }

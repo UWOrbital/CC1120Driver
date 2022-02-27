@@ -27,9 +27,9 @@ void setup() {
 
     Serial.println("Starting unit tests...");
     bool status = true;
+    status &= checkStrobe();
     status &= checkSPIRead();
     status &= checkSPIWrite();
-    status &= checkStrobe();
     if(!status)
         Serial.println("CC1120 tests failed. Please try grounding RST and pulling it high again.");
     else
