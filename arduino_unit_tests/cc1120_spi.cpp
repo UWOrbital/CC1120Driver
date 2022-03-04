@@ -40,7 +40,7 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
  * @return true - If the read was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoReadBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
 
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
@@ -92,7 +92,7 @@ bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
     digitalWrite(CS, LOW);
     if (!sendByteReceiveStatus(BURST_BIT | R_BIT | EXT_ADDR)) {
         digitalWrite(CS, HIGH);
@@ -139,7 +139,7 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoWriteBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
@@ -195,7 +195,7 @@ bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
     digitalWrite(CS, LOW);
     if (!sendByteReceiveStatus(BURST_BIT | EXT_ADDR)) {
         digitalWrite(CS, HIGH);
