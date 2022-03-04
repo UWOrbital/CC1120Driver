@@ -56,7 +56,7 @@ bool arduinoReadBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
 
 
     for (int i = 0; i < length; ++i) {
-        *(dataPtr[i]) = SPI.transfer(0x00);
+        *(dataPtrs[i]) = SPI.transfer(0x00);
     }
 
     digitalWrite(CS, HIGH);
@@ -100,7 +100,7 @@ bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length
     }
     SPI.transfer(addr);
     for (int i = 0; i < length; ++i) {
-        *(dataPtr[i]) = SPI.transfer(0xFF);
+        *(dataPtrs[i]) = SPI.transfer(0xFF);
     }
     digitalWrite(CS, HIGH);
     return true;
