@@ -5,7 +5,6 @@
 #include "Arduino.h"
 #include <stdint.h>
 #include <SPI.h>
-#include <initializer_list>
 
 /**
  * @brief Reads a register from the CC1120.
