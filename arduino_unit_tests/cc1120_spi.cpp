@@ -35,12 +35,12 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
  * @brief Reads registers from the CC1120 in burst access mode.
  * 
  * @param addr - The address of the first register to read.
- * @param dataPtrs - Array of pointers to the variables to store the read data.
+ * @param dataPtrs - Array to store the read data.
  * @param length - Size of the pointer array.
  * @return true - If the read was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
+bool arduinoReadBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
 
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
@@ -56,7 +56,7 @@ bool arduinoReadBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
 
 
     for (int i = 0; i < length; ++i) {
-        *(dataPtrs[i]) = SPI.transfer(0x00);
+        dataPtrs[i] = SPI.transfer(0x00);
     }
 
     digitalWrite(CS, HIGH);
@@ -87,12 +87,12 @@ bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
  * @brief Reads an extended address space register on the CC1120 in burst access mode.
  * 
  * @param addr - The address of the register to read, starting at 0x00.
- * @param dataPtrs - Array of pointers to the variables to store the read data.
+ * @param dataPtrs - Array to store the read data.
  * @param length - Size of the pointer array.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
+bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
     digitalWrite(CS, LOW);
     if (!sendByteReceiveStatus(BURST_BIT | R_BIT | EXT_ADDR)) {
         digitalWrite(CS, HIGH);
@@ -100,7 +100,7 @@ bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length
     }
     SPI.transfer(addr);
     for (int i = 0; i < length; ++i) {
-        *(dataPtrs[i]) = SPI.transfer(0xFF);
+        dataPtrs[i] = SPI.transfer(0xFF);
     }
     digitalWrite(CS, HIGH);
     return true;
@@ -134,12 +134,12 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
  * @brief Writes to registers on the CC1120 in burst access mode.
  * 
  * @param addr - The address of the first register to write to.
- * @param dataPtrs - Array of pointers to the variables storing the write data.
+ * @param dataPtrs - Array storing the write data.
  * @param length - Size of the pointer array.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
+bool arduinoWriteBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
@@ -190,12 +190,12 @@ bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
  * @brief Writes to and extended address space register on the CC1120 in burst access mode.
  * 
  * @param addr - The address of the register to write to, starting at 0x00.
- * @param dataPtrs - Array of pointers to the variables storing the write data.
+ * @param dataPtrs - Array storing the write data.
  * @param length - Size of the pointer array.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t* dataPtrs[], size_t length) {
+bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
     digitalWrite(CS, LOW);
     if (!sendByteReceiveStatus(BURST_BIT | EXT_ADDR)) {
         digitalWrite(CS, HIGH);
