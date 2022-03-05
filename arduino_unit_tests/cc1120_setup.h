@@ -1,6 +1,7 @@
 #ifndef SETUP_CC1120_H
 #define SETUP_CC1120_H
 
+#define FXOSC 32000000
 int NtoKBits(int number, int start, int end);
 void setGSFK();
 bool setSymbolRate(int symbolRate);
@@ -17,5 +18,7 @@ bool setAddressCheckConfig(int setting);
 bool configLengthField(int setting, int numberOfBits);
 bool configSync(int syncMode, int syncNumError, long int syncWord);
 bool configPreamble(int preambleWord, int numPreamble);
+bool setVCOFrequency(int frequency);
+bool setRFFrequency(int frequency);
 
 #endif /* SETUP_CC1120_H */

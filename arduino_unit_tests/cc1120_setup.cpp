@@ -2,6 +2,7 @@
 
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
+#include "cc1120_ext_regs.h"
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
@@ -37,8 +38,6 @@ void setGSFK() {
  * @return false - If the operation was not successful.
  */
 bool setSymbolRate(int symbolRate) {
-    long int FXOSC = 32000000;
-
     int STRATE_E = 0;
     long int STRATE_M = (pow(2, 38) * ((double)symbolRate / 1000)) / FXOSC;
 
@@ -291,4 +290,50 @@ bool configPreamble(int preambleWord, int numPreamble) {
         return false;
     }
     return arduinoWriteSPI(PREAMBLE_CFG1, numPreamble << 2 | preambleWord | readData);
+}
+
+/**
+ * @brief Sets VCO frequency.
+ * 
+ * @param frequency - The frequency to set to.
+ * @return true - If the operation was successful
+ * @return false - If the operation was not successful.
+ */
+bool setVCOFrequency(int frequency) {
+    long int FREQ = (pow(2, 16) * frequency) / FXOSC;
+
+    if (FREQ > pow(2, 24) - 1) {
+        // Larger than largest 24 bit unsigned integer
+        return false;
+    }
+
+    bool succeeded = true;
+    succeeded = succeeded && arduinoWriteExtAddrSPI(FREQ2, NtoKBits(FREQ, 16, 23));
+    succeeded = succeeded && arduinoWriteExtAddrSPI(FREQ1, NtoKBits(FREQ, 8, 15));
+    succeeded = succeeded && arduinoWriteExtAddrSPI(FREQ0, NtoKBits(FREQ, 0, 7));
+    return succeeded;
+}
+
+/**
+ * @brief Sets RF frequency.
+ * 
+ * @param frequency - The frequency to set to.
+ * @return true - If the operation was successful
+ * @return false - If the operation was not successful.
+ */
+bool setRFFrequency(int frequency) {
+    uint8_t readData;
+    if (!arduinoReadSPI(FS_CFG, &readData)) {
+        return false;
+    }
+    int bandSelectSetting = NtoKBits(readData, 0, 3);
+    int LODivider;
+
+    if (bandSelectSetting == 11) {
+        LODivider = 24;
+    } else {
+        LODivider = 2 * bandSelectSetting;
+    }
+
+    return setVCOFrequency(frequency * LODivider);
 }
