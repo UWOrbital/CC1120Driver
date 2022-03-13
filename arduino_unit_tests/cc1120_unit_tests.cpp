@@ -66,6 +66,8 @@ void setRegisterDefaults() {
  * @brief Unit test for SPI read function.
  * Reads through all registers up to the extended register space,
  * and compares values to default values.
+ * Burst reads all the values and compares them to the default values.
+ * Burst reads FREQ registers in extended address space and compares them to defaults.
  * 
  * @return true - If all registers are read correctly and have the right value.
  * @return false - If any register does not have the expected value,
@@ -100,6 +102,15 @@ bool checkSPIRead() {
             addr++;
         }
     }
+
+
+    addr = 0x00;
+    uint8_t burstData[EXT_ADDR];
+    if (!arduinoBurstReadSPI(addr, burstData, EXT_ADDR) ||
+        memcmp(REGS_DEFAULTS, burstData, EXT_ADDR) != 0) {
+        Serial.println("ERROR. CC1120 burst read test failed.");
+        return false;
+    }
     
     if (!arduinoReadExtAddrSPI(MARCSTATE, &data)) {
         Serial.println("ERROR. CC1120 read test failed.");
@@ -113,6 +124,14 @@ bool checkSPIRead() {
         return false;
     }
 
+    uint8_t extBurstData[3];
+    uint8_t expected[3] = {0x00, 0x00, 0x00};
+    if (!arduinoBurstReadExtAddrSPI(FREQ2, extBurstData, 3) ||
+        memcmp(extBurstData, expected, 3) != 0) {
+        Serial.println("ERROR. CC1120 burst read test failed.");
+        return false;
+    }
+
     Serial.println("CC1120 SPI read test passed");
 
     return true;
@@ -122,6 +141,8 @@ bool checkSPIRead() {
  * @brief Unit test for SPI write function.
  * Writes to frequency offset register and extended address space RNDGEN register.
  * Reads the registers to see if the write was successful.
+ * Burst writes to the sync word registers, then burst reads to see if the writes were successful.
+ * Burst writes to the FREQ registers, then burst reads to see if the writes were successful.
  * 
  * @return true - If both writes are successful.
  * @return false - If any register does not have the expected value,
@@ -141,6 +162,15 @@ bool checkSPIWrite() {
         return false;
     }
 
+    uint8_t burstData[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+    uint8_t burstDataRead[4];
+    if (!arduinoBurstWriteSPI(SYNC3, burstData, 4) ||
+        !arduinoBurstReadSPI(SYNC3, burstDataRead, 4) ||
+        memcmp(burstData, burstDataRead, 4) != 0) {
+        Serial.println("ERROR. CC1120 burst write test failed.");
+        return false;
+    }
+
     if (!arduinoWriteExtAddrSPI(FREQ1, 0x80) || !arduinoReadExtAddrSPI(FREQ1, &data)) {
         Serial.println("ERROR. CC1120 SPI write test failed");
         return false;
@@ -152,6 +182,15 @@ bool checkSPIWrite() {
         Serial.println(0x80, HEX);
         return false;
     }
+
+    uint8_t extBurstData[3] = {0x70, 0x80, 0x00};
+    uint8_t extBurstRead[3];
+    if (!arduinoBurstWriteExtAddrSPI(FREQ2, extBurstData, 3) ||
+        !arduinoBurstReadExtAddrSPI(FREQ2, extBurstRead, 3) ||
+        memcmp(extBurstData, extBurstRead, 3) != 0) {
+        Serial.println("ERROR. CC1120 SPI write test failed");
+        return false;
+    } 
     
     Serial.println("CC1120 SPI write test passed");
     return true;
@@ -179,4 +218,59 @@ bool checkStrobe() {
     
     Serial.println("CC1120 SPI strobe test passed");
     return true;    
+}
+
+/**
+ * @brief - Unit test for the CC1120's FIFO read and write functionality.
+ * Writes to the FIFO and then does a direct read to see if the write was successful.
+ * Wries directly to the FIFO and then reads the FIFO to see if the write was successful.
+ * 
+ * @return true - If the FIFO read and write tests pass.
+ * @return false - If the FIFO read and write tests fail.
+ */
+bool checkFIFOReadWrite() {
+    uint8_t data;
+    if (!arduinoWriteFIFO(0x0A) || !arduinoReadFIFODirect(FIFO_TX_START, &data)) {
+        Serial.println("ERROR. CC1120 FIFO test failed.");
+        return false;
+    } else if (data != 0x0A) {
+        Serial.println("ERROR. CC1120 FIFO test failed");
+        Serial.print("FIFO_TX_START read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0x0A, HEX);
+        return false;
+    }
+    uint8_t burstWriteData[3] = {0x0B, 0x0C, 0x0D};
+    uint8_t burstReadData[3];
+    if (!arduinoBurstWriteFIFO(burstWriteData, 3) ||
+        !arduinoBurstReadFIFODirect(FIFO_TX_START, burstReadData, 3) ||
+        memcmp(burstWriteData, burstReadData, 3) != 0) {
+        Serial.println("ERROR. CC1120 FIFO test failed.");
+        return false;
+    }
+
+    data = 0x00;
+    if (!arduinoWriteFIFODirect(FIFO_RX_START, 0x0E) ||
+        !arduinoReadFIFO(data)) {
+        Serial.println("ERROR. CC1120 FIFO test failed.");
+    } else if (data != 0x0E) {
+        Serial.println("ERROR. CC1120 FIFO test failed");
+        Serial.print("FIFO_RX_START read ");
+        Serial.print(data, HEX);
+        Serial.print(", expected ");
+        Serial.println(0x0E, HEX);
+        return false;
+    }
+    uint8_t burstWriteData2[3] = {0x0F, 0x10, 0x11};
+    uint8_t burstReadData2[3];
+    if (!arduinoBurstWriteFIFODirect(FIFO_RX_START, burstWriteData2, 3) ||
+        !arduinoBurstReadFIFO(burstReadData2, 3) ||
+        memcmp(burstWriteData2, burstReadData2, 3) != 0) {
+        Serial.println("ERROR. CC1120 FIFO test failed.");
+        return false;
+    }
+
+    Serial.println("CC1120 FIFO test passed");
+    return true;
 }
