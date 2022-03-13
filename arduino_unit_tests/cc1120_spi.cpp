@@ -32,16 +32,15 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
 }
 
 /**
- * @brief Reads registers from the CC1120 in burst access mode.
+ * @brief - Reads consecutive registers from the CC1120 in burst access mode.
  * 
  * @param addr - The address of the first register to read.
- * @param dataPtrs - Array to store the read data.
- * @param length - Size of the pointer array.
+ * @param data - The array to store the read data.
+ * @param len - The number of registers to read.
  * @return true - If the read was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
-
+bool arduinoBurstReadSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
@@ -53,12 +52,9 @@ bool arduinoReadBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
         digitalWrite(CS, HIGH);
         return false;
     }
-
-
-    for (int i = 0; i < length; ++i) {
-        dataPtrs[i] = SPI.transfer(0x00);
+    for(uint8_t i = 0; i < len; i++) {
+        data[i] = SPI.transfer(0x00);
     }
-
     digitalWrite(CS, HIGH);
     return true;
 }
@@ -84,23 +80,23 @@ bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
 }
 
 /**
- * @brief Reads an extended address space register on the CC1120 in burst access mode.
+ * @brief - Reads consecutive extended address space registers from the CC1120 in burst mode.
  * 
- * @param addr - The address of the register to read, starting at 0x00.
- * @param dataPtrs - Array to store the read data.
- * @param length - Size of the pointer array.
- * @return true - If the write was successful.
+ * @param addr - The address of the first register to read.
+ * @param data - The array to store the read data.
+ * @param len - The number of registers to read.
+ * @return true - If the read was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoReadBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoBurstReadExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(BURST_BIT | R_BIT | EXT_ADDR)) {
+    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
     SPI.transfer(addr);
-    for (int i = 0; i < length; ++i) {
-        dataPtrs[i] = SPI.transfer(0xFF);
+    for(uint8_t i = 0; i < len; i++) {
+        data[i] = SPI.transfer(0xFF);
     }
     digitalWrite(CS, HIGH);
     return true;
@@ -125,21 +121,24 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
         digitalWrite(CS, HIGH);
         return false;
     }
-    SPI.transfer(data);
+    if (!sendByteReceiveStatus(data)) {
+        digitalWrite(CS, HIGH);
+        return false;
+    }
     digitalWrite(CS, HIGH);
     return true;
 }
 
 /**
- * @brief Writes to registers on the CC1120 in burst access mode.
+ * @brief - Writes consecutive registers on the CC1120 in burst mode.
  * 
  * @param addr - The address of the first register to write to.
- * @param dataPtrs - Array storing the write data.
- * @param length - Size of the pointer array.
+ * @param data - The array of data to write to the registers.
+ * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoBurstWriteSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     if(addr >= EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
@@ -150,11 +149,12 @@ bool arduinoWriteBurstSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
         digitalWrite(CS, HIGH);
         return false;
     }
-
-    for (int i = 0; i < length; ++i) {
-        SPI.transfer(dataPtrs[i]);
+    for(uint8_t i = 0; i < len; i++) {
+        if (!sendByteReceiveStatus(data[i])) {
+            digitalWrite(CS, HIGH);
+            return false;
+        }
     }
-
     digitalWrite(CS, HIGH);
     return true;
 }
@@ -187,17 +187,17 @@ bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
 }
 
 /**
- * @brief Writes to and extended address space register on the CC1120 in burst access mode.
+ * @brief - Writes consecutive extended address space registers on the CC1120 in burst mode.
  * 
- * @param addr - The address of the register to write to, starting at 0x00.
- * @param dataPtrs - Array storing the write data.
- * @param length - Size of the pointer array.
+ * @param addr - The address of the first register to write to.
+ * @param data - The array of data to write to the registers.
+ * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length) {
+bool arduinoBurstWriteExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(BURST_BIT | EXT_ADDR)) {
+    if (!sendByteReceiveStatus(EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -206,11 +206,12 @@ bool arduinoWriteBurstExtAddrSPI(uint8_t addr, uint8_t dataPtrs[], size_t length
         digitalWrite(CS, HIGH);
         return false;
     }
-
-    for (int i = 0; i < length; ++i) {
-        SPI.transfer(dataPtrs[i]);
+    for(uint8_t i = 0; i < len; i++) {
+        if (!sendByteReceiveStatus(data[i])) {
+            digitalWrite(CS, HIGH);
+            return false;
+        }
     }
-
     digitalWrite(CS, HIGH);
     return true;
 }
@@ -250,7 +251,28 @@ bool arduinoReadFIFO(uint8_t *data) {
         digitalWrite(CS, HIGH);
         return false;
     }
-    *data = SPI.transfer(0xff);
+    *data = SPI.transfer(0xFF);
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
+ * @brief - Reads consecutive registers from the FIFO memory in burst mode.
+ * 
+ * @param data - The array to store the read data.
+ * @param len - The number of registers to read.
+ * @return true - If the read was successful.
+ * @return false - If the status byte is invalid.
+ */
+bool arduinoBurstReadFIFO(uint8_t data[], uint8_t len) {
+    digitalWrite(CS, LOW);
+    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | REG_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
+        return false;
+    }
+    for(uint8_t i = 0; i < len; i++) {
+        data[i] = SPI.transfer(0xFF);
+    }
     digitalWrite(CS, HIGH);
     return true;
 }
@@ -274,6 +296,27 @@ bool arduinoWriteFIFO(uint8_t data) {
 }
 
 /**
+ * @brief - Writes consecutive registers to the FIFO memory in burst mode.
+ * 
+ * @param data - The array of data to write to the FIFO.
+ * @param len - The number of registers to write.
+ * @return true - If the write was successful.
+ * @return false - If the status byte is invalid.
+ */
+bool arduinoBurstWriteFIFO(uint8_t data[], uint8_t len) {
+    digitalWrite(CS, LOW);
+    if (!sendByteReceiveStatus(BURST_BIT | REG_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
+        return false;
+    }
+    for(uint8_t i = 0; i < len; i++) {
+        SPI.transfer(data[i]);
+    }
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
  * @brief Reads directly from the FIFO on the CC1120.
  * 
  * @param addr - The address of the register to read. Range 0x00 - 0xFF.
@@ -282,7 +325,7 @@ bool arduinoWriteFIFO(uint8_t data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
-    if (addr <= FIFO_TX_START || addr >= FIFO_TX_END) {
+    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
@@ -299,6 +342,34 @@ bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
 }
 
 /**
+ * @brief - Reads consecutive registers directly from the FIFO on the CC1120 in burst mode.
+ * 
+ * @param addr - The address of the first register to read. Range 0x00 - 0xFF.
+ * @param data - The array to store the read data.
+ * @param len - The number of registers to read.
+ * @return true - If the read was successful.
+ * @return false - If the register is not valid, or the status byte is invalid.
+ */
+bool arduinoBurstReadFIFODirect(uint8_t addr, uint8_t data[], uint8_t len) {
+    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+        Serial.println("Not a valid FIFO register!");
+        return false;
+    }
+
+    digitalWrite(CS, LOW);
+    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
+        return false;
+    }
+    SPI.transfer(addr);
+    for(uint8_t i = 0; i < len; i++) {
+        data[i] = SPI.transfer(0xff);
+    }
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
  * @brief Writes directly to the FIFO on the CC1120.
  * 
  * @param addr - The address of the register to write to. Range 0x00 - 0xFF.
@@ -307,7 +378,7 @@ bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data) {
-    if (addr <= FIFO_TX_START || addr >= FIFO_RX_END) {
+    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
@@ -323,6 +394,41 @@ bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data) {
     return true;
 }
 
+/**
+ * @brief - Writes consecutive registers directly to the FIFO on the CC1120 in burst mode.
+ * 
+ * @param addr - The address of the first register to write to. Range 0x00 - 0xFF.
+ * @param data - The array of data to write to the registers.
+ * @param len - The number of registers to write.
+ * @return true - If the write was successful.
+ * @return false - If the register is not valid, or the status byte is invalid.
+ */
+bool arduinoBurstWriteFIFODirect(uint8_t addr, uint8_t data[], uint8_t len) {
+    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+        Serial.println("Not a valid FIFO register!");
+        return false;
+    }
+
+    digitalWrite(CS, LOW);
+    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+        digitalWrite(CS, HIGH);
+        return false;
+    }
+    SPI.transfer(addr);
+    for(uint8_t i = 0; i < len; i++) {
+        SPI.transfer(data[i]);
+    }
+    digitalWrite(CS, HIGH);
+    return true;
+}
+
+/**
+ * @brief - Reads the status register on the CC1120 and consecutively sends a byte over SPI.
+ * 
+ * @param data - The data to send to the status register.
+ * @return true - If the status byte is valid.
+ * @return false - If the status byte is invalid.
+ */
 bool sendByteReceiveStatus(uint8_t data) {
     union cc_st ccstatus;
 

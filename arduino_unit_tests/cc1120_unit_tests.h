@@ -8,5 +8,6 @@ void setRegisterDefaults();
 bool checkSPIRead();
 bool checkSPIWrite();
 bool checkStrobe();
+bool checkFIFOReadWrite();
 
 #endif /* UNIT_TESTS_CC1120_H */
