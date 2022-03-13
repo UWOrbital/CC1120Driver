@@ -1,6 +1,7 @@
 #ifndef REGS_CC1120_H
 #define REGS_CC1120_H
 
+// Standard address space registers
 #define IOCFG3              0x00
 #define IOCFG2              0x01
 #define IOCFG1              0x02
@@ -49,8 +50,10 @@
 #define PA_CFG0             0x2D
 #define PKT_LEN             0x2E
 
+// Extended address space register
 #define EXT_ADDR            0x2F
 
+// Strobe command registers
 #define SRES                0x30
 #define SFSTXON             0x31
 #define SXOFF               0x32
@@ -65,6 +68,7 @@
 #define SWORRST             0x3C
 #define SNOP                0x3D
 
+// FIFO access registers
 #define DIR_FIFO_ACCESS     0x3E
 #define REG_FIFO_ACCESS     0x3F
 #define FIFO_TX_START       0x00

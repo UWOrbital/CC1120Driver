@@ -11,7 +11,8 @@
 #include "arduino_unit_tests.h"
 #include "cc1120_spi.h"
 #include "cc1120_unit_tests.h"
-#include "arduino_unit_tests.h"
+#include "cc1120_regs.h"
+#include "cc1120_ext_regs.h"
 
 /**
  * @brief Set up the SPI pins and the CS pin, run unit tests.
@@ -27,13 +28,18 @@ void setup() {
 
     Serial.println("Starting unit tests...");
     bool status = true;
+    status &= checkStrobe();
     status &= checkSPIRead();
     status &= checkSPIWrite();
-    status &= checkStrobe();
-    if(!status)
+    status &= checkFIFOReadWrite();
+    if (!status)
         Serial.println("CC1120 tests failed. Please try grounding RST and pulling it high again.");
     else
         Serial.println("All CC1120 tests passed.");
+    
+    if (!arduinoStrobeSPI(SRES)) {
+        Serial.println("ERROR. CC1120 reset failed.");
+    }
 }
 
 /**

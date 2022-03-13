@@ -19,13 +19,22 @@ union cc_st {
 };
 
 bool arduinoReadSPI(uint8_t addr, uint8_t *data);
+bool arduinoBurstReadSPI(uint8_t addr, uint8_t data[], uint8_t len);
 bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data);
+bool arduinoBurstReadExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len);
 bool arduinoWriteSPI(uint8_t addr, uint8_t data);
+bool arduinoBurstWriteSPI(uint8_t addr, uint8_t data[], uint8_t len);
 bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data);
+bool arduinoBurstWriteExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len);
 bool arduinoStrobeSPI(uint8_t addr);
 bool arduinoReadFIFO(uint8_t *data);
-bool arduinoWriteFIFO(uint8_t *data);
+bool arduinoBurstReadFIFO(uint8_t data[], uint8_t len);
+bool arduinoWriteFIFO(uint8_t data);
+bool arduinoBurstWriteFIFO(uint8_t data[], uint8_t len);
 bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data);
+bool arduinoBurstReadFIFODirect(uint8_t addr, uint8_t data[], uint8_t len);
 bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data);
+bool arduinoBurstWriteFIFODirect(uint8_t addr, uint8_t data[], uint8_t len);
+bool sendByteReceiveStatus(uint8_t data);
 
 #endif /* SPI_CC1120_H */
