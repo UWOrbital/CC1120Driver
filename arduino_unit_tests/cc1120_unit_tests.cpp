@@ -1,11 +1,10 @@
 #include "cc1120_unit_tests.h"
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
-#include "cc1120_ext_regs.h"
 #include "Arduino.h"
 #include <stdint.h>
 
-static uint8_t REGS_DEFAULTS[EXT_ADDR];
+static uint8_t REGS_DEFAULTS[CC1120_REGS_EXT_ADDR];
 union cc_st ccstatus;
 
 /**

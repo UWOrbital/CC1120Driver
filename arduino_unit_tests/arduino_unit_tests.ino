@@ -22,20 +22,34 @@ void setup() {
 
     pinMode(CS, OUTPUT);
     digitalWrite(CS, HIGH);
+
+    pinMode(RST, OUTPUT);
+    digitalWrite(RST, HIGH);
+
     SPI.begin();
     delay(1000);
 
     Serial.println("Starting unit tests...");
     bool status = true;
-    status &= checkStrobe();
-    status &= checkSPIRead();
-    status &= checkSPIWrite();
-    status &= checkFIFOReadWrite();
-    if (!status)
-        Serial.println("CC1120 tests failed. Please try grounding RST and pulling it high again.");
-    else
-        Serial.println("All CC1120 tests passed.");
-    
+    for(uint8_t i=0; i<3; i++) {
+        status &= checkStrobe();
+        status &= checkSPIRead();
+        status &= checkSPIWrite();
+        status &= checkFIFOReadWrite();
+        if (status) {
+            Serial.println("All CC1120 tests passed. Resetting the chip...");
+            break;
+        } else {
+            Serial.print("CC1120 tests failed. Trying again... (");
+            Serial.print(i+1);
+            Serial.println("/3)");
+
+            digitalWrite(RST, LOW);
+            delay(1000);
+            digitalWrite(RST, HIGH);
+        }
+    }
+
     if (!arduinoStrobeSPI(CC1120_REGS_STROBE_SRES)) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
