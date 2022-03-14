@@ -15,7 +15,7 @@
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
-    if(addr >= EXT_ADDR) {
+    if(addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
     }
@@ -41,7 +41,7 @@ bool arduinoReadSPI(uint8_t addr, uint8_t *data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoBurstReadSPI(uint8_t addr, uint8_t data[], uint8_t len) {
-    if(addr >= EXT_ADDR) {
+    if(addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
     }
@@ -69,7 +69,7 @@ bool arduinoBurstReadSPI(uint8_t addr, uint8_t data[], uint8_t len) {
  */
 bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(R_BIT | EXT_ADDR)) {
+    if (!sendByteReceiveStatus(R_BIT | CC1120_REGS_EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -90,7 +90,7 @@ bool arduinoReadExtAddrSPI(uint8_t addr, uint8_t *data) {
  */
 bool arduinoBurstReadExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | EXT_ADDR)) {
+    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | CC1120_REGS_EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -111,7 +111,7 @@ bool arduinoBurstReadExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
-    if(addr >= EXT_ADDR) {
+    if(addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
     }
@@ -139,7 +139,7 @@ bool arduinoWriteSPI(uint8_t addr, uint8_t data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoBurstWriteSPI(uint8_t addr, uint8_t data[], uint8_t len) {
-    if(addr >= EXT_ADDR) {
+    if(addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
         return false;
     }
@@ -169,7 +169,7 @@ bool arduinoBurstWriteSPI(uint8_t addr, uint8_t data[], uint8_t len) {
  */
 bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(EXT_ADDR)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -197,7 +197,7 @@ bool arduinoWriteExtAddrSPI(uint8_t addr, uint8_t data) {
  */
 bool arduinoBurstWriteExtAddrSPI(uint8_t addr, uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(EXT_ADDR)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_EXT_ADDR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -247,7 +247,7 @@ bool arduinoStrobeSPI(uint8_t addr) {
  */
 bool arduinoReadFIFO(uint8_t *data) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(R_BIT | REG_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(R_BIT | CC1120_REGS_FIFO_ACCESS_STD)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -266,7 +266,7 @@ bool arduinoReadFIFO(uint8_t *data) {
  */
 bool arduinoBurstReadFIFO(uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | REG_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -286,7 +286,7 @@ bool arduinoBurstReadFIFO(uint8_t data[], uint8_t len) {
  */
 bool arduinoWriteFIFO(uint8_t data) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(REG_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_FIFO_ACCESS_STD)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -305,7 +305,7 @@ bool arduinoWriteFIFO(uint8_t data) {
  */
 bool arduinoBurstWriteFIFO(uint8_t data[], uint8_t len) {
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(BURST_BIT | REG_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -325,13 +325,13 @@ bool arduinoBurstWriteFIFO(uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
-    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
 
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_FIFO_ACCESS_DIR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -351,13 +351,13 @@ bool arduinoReadFIFODirect(uint8_t addr, uint8_t *data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoBurstReadFIFODirect(uint8_t addr, uint8_t data[], uint8_t len) {
-    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
 
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_FIFO_ACCESS_DIR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -378,13 +378,13 @@ bool arduinoBurstReadFIFODirect(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data) {
-    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
 
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_FIFO_ACCESS_DIR)) {
         digitalWrite(CS, HIGH);
         return false;
     }
@@ -404,13 +404,13 @@ bool arduinoWriteFIFODirect(uint8_t addr, uint8_t data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool arduinoBurstWriteFIFODirect(uint8_t addr, uint8_t data[], uint8_t len) {
-    if (addr < FIFO_TX_START || addr > FIFO_RX_END) {
+    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
 
     digitalWrite(CS, LOW);
-    if (!sendByteReceiveStatus(DIR_FIFO_ACCESS)) {
+    if (!sendByteReceiveStatus(CC1120_REGS_FIFO_ACCESS_DIR)) {
         digitalWrite(CS, HIGH);
         return false;
     }

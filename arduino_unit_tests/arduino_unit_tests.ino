@@ -12,7 +12,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_unit_tests.h"
 #include "cc1120_regs.h"
-#include "cc1120_ext_regs.h"
 
 /**
  * @brief Set up the SPI pins and the CS pin, run unit tests.
@@ -37,7 +36,7 @@ void setup() {
     else
         Serial.println("All CC1120 tests passed.");
     
-    if (!arduinoStrobeSPI(SRES)) {
+    if (!arduinoStrobeSPI(CC1120_REGS_STROBE_SRES)) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
 }

@@ -13,53 +13,53 @@ union cc_st ccstatus;
  * 
  */
 void setRegisterDefaults() {
-    REGS_DEFAULTS[IOCFG3] = 0x06;
-    REGS_DEFAULTS[IOCFG2] = 0x07;
-    REGS_DEFAULTS[IOCFG1] = 0x30;
-    REGS_DEFAULTS[IOCFG0] = 0x3C;
-    REGS_DEFAULTS[SYNC3] = 0x93;
-    REGS_DEFAULTS[SYNC2] = 0x0B;
-    REGS_DEFAULTS[SYNC1] = 0x51;
-    REGS_DEFAULTS[SYNC0] = 0xDE;
-    REGS_DEFAULTS[SYNC_CFG1] = 0x0A;
-    REGS_DEFAULTS[SYNC_CFG0] = 0x17;
-    REGS_DEFAULTS[DEVIATION_M] = 0x06;
-    REGS_DEFAULTS[MODCFG_DEV_E] = 0x03;
-    REGS_DEFAULTS[DCFILT_CFG] = 0x4C;
-    REGS_DEFAULTS[PREAMBLE_CFG1] = 0x14;
-    REGS_DEFAULTS[PREAMBLE_CFG0] = 0x2A;
-    REGS_DEFAULTS[FREQ_IF_CFG] = 0x40;
-    REGS_DEFAULTS[IQIC] = 0xC4;
-    REGS_DEFAULTS[CHAN_BW] = 0x14;
-    REGS_DEFAULTS[MDMCFG1] = 0x46;
-    REGS_DEFAULTS[MDMCFG0] = 0x0D;
-    REGS_DEFAULTS[SYMBOL_RATE2] = 0x43;
-    REGS_DEFAULTS[SYMBOL_RATE1] = 0xA9;
-    REGS_DEFAULTS[SYMBOL_RATE0] = 0x2A;
-    REGS_DEFAULTS[AGC_REF] = 0x36;
-    REGS_DEFAULTS[AGC_CS_THR] = 0x00;
-    REGS_DEFAULTS[AGC_GAIN_ADJUST] = 0x00;
-    REGS_DEFAULTS[AGC_CFG3] = 0x91;
-    REGS_DEFAULTS[AGC_CFG2] = 0x20;
-    REGS_DEFAULTS[AGC_CFG1] = 0xAA;
-    REGS_DEFAULTS[AGC_CFG0] = 0xC3;
-    REGS_DEFAULTS[FIFO_CFG] = 0x80;
-    REGS_DEFAULTS[DEV_ADDR] = 0x00;
-    REGS_DEFAULTS[SETTLING_CFG] = 0x0B;
-    REGS_DEFAULTS[FS_CFG] = 0x02;
-    REGS_DEFAULTS[WOR_CFG1] = 0x08;
-    REGS_DEFAULTS[WOR_CFG0] = 0x21;
-    REGS_DEFAULTS[WOR_EVENT0_MSB] = 0x00;
-    REGS_DEFAULTS[WOR_EVENT0_LSB] = 0x00;
-    REGS_DEFAULTS[PKT_CFG2] = 0x04;
-    REGS_DEFAULTS[PKT_CFG1] = 0x05;
-    REGS_DEFAULTS[PKT_CFG0] = 0x00;
-    REGS_DEFAULTS[RFEND_CFG1] = 0x0F;
-    REGS_DEFAULTS[RFEND_CFG0] = 0x00;
-    REGS_DEFAULTS[PA_CFG2] = 0x7F;
-    REGS_DEFAULTS[PA_CFG1] = 0x56;
-    REGS_DEFAULTS[PA_CFG0] = 0x7C;
-    REGS_DEFAULTS[PKT_LEN] = 0x03;
+    REGS_DEFAULTS[CC1120_REGS_IOCFG3] = 0x06;
+    REGS_DEFAULTS[CC1120_REGS_IOCFG2] = 0x07;
+    REGS_DEFAULTS[CC1120_REGS_IOCFG1] = 0x30;
+    REGS_DEFAULTS[CC1120_REGS_IOCFG0] = 0x3C;
+    REGS_DEFAULTS[CC1120_REGS_SYNC3] = 0x93;
+    REGS_DEFAULTS[CC1120_REGS_SYNC2] = 0x0B;
+    REGS_DEFAULTS[CC1120_REGS_SYNC1] = 0x51;
+    REGS_DEFAULTS[CC1120_REGS_SYNC0] = 0xDE;
+    REGS_DEFAULTS[CC1120_REGS_SYNC_CFG1] = 0x0A;
+    REGS_DEFAULTS[CC1120_REGS_SYNC_CFG0] = 0x17;
+    REGS_DEFAULTS[CC1120_REGS_DEVIATION_M] = 0x06;
+    REGS_DEFAULTS[CC1120_REGS_MODCFG_DEV_E] = 0x03;
+    REGS_DEFAULTS[CC1120_REGS_DCFILT_CFG] = 0x4C;
+    REGS_DEFAULTS[CC1120_REGS_PREAMBLE_CFG1] = 0x14;
+    REGS_DEFAULTS[CC1120_REGS_PREAMBLE_CFG0] = 0x2A;
+    REGS_DEFAULTS[CC1120_REGS_FREQ_IF_CFG] = 0x40;
+    REGS_DEFAULTS[CC1120_REGS_IQIC] = 0xC4;
+    REGS_DEFAULTS[CC1120_REGS_CHAN_BW] = 0x14;
+    REGS_DEFAULTS[CC1120_REGS_MDMCFG1] = 0x46;
+    REGS_DEFAULTS[CC1120_REGS_MDMCFG0] = 0x0D;
+    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE2] = 0x43;
+    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE1] = 0xA9;
+    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE0] = 0x2A;
+    REGS_DEFAULTS[CC1120_REGS_AGC_REF] = 0x36;
+    REGS_DEFAULTS[CC1120_REGS_AGC_CS_THR] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_AGC_GAIN_ADJUST] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_AGC_CFG3] = 0x91;
+    REGS_DEFAULTS[CC1120_REGS_AGC_CFG2] = 0x20;
+    REGS_DEFAULTS[CC1120_REGS_AGC_CFG1] = 0xAA;
+    REGS_DEFAULTS[CC1120_REGS_AGC_CFG0] = 0xC3;
+    REGS_DEFAULTS[CC1120_REGS_FIFO_CFG] = 0x80;
+    REGS_DEFAULTS[CC1120_REGS_DEV_ADDR] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_SETTLING_CFG] = 0x0B;
+    REGS_DEFAULTS[CC1120_REGS_FS_CFG] = 0x02;
+    REGS_DEFAULTS[CC1120_REGS_WOR_CFG1] = 0x08;
+    REGS_DEFAULTS[CC1120_REGS_WOR_CFG0] = 0x21;
+    REGS_DEFAULTS[CC1120_REGS_WOR_EVENT0_MSB] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_WOR_EVENT0_LSB] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_PKT_CFG2] = 0x04;
+    REGS_DEFAULTS[CC1120_REGS_PKT_CFG1] = 0x05;
+    REGS_DEFAULTS[CC1120_REGS_PKT_CFG0] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_RFEND_CFG1] = 0x0F;
+    REGS_DEFAULTS[CC1120_REGS_RFEND_CFG0] = 0x00;
+    REGS_DEFAULTS[CC1120_REGS_PA_CFG2] = 0x7F;
+    REGS_DEFAULTS[CC1120_REGS_PA_CFG1] = 0x56;
+    REGS_DEFAULTS[CC1120_REGS_PA_CFG0] = 0x7C;
+    REGS_DEFAULTS[CC1120_REGS_PKT_LEN] = 0x03;
 }
 
 /**
@@ -78,7 +78,7 @@ bool checkSPIRead() {
     uint8_t addr = 0x00;
     uint8_t data;
     
-    while (addr < EXT_ADDR) {
+    while (addr < CC1120_REGS_EXT_ADDR) {
         if (!arduinoReadSPI(addr, &data))
             return false;
 
@@ -105,14 +105,14 @@ bool checkSPIRead() {
 
 
     addr = 0x00;
-    uint8_t burstData[EXT_ADDR];
-    if (!arduinoBurstReadSPI(addr, burstData, EXT_ADDR) ||
-        memcmp(REGS_DEFAULTS, burstData, EXT_ADDR) != 0) {
+    uint8_t burstData[CC1120_REGS_EXT_ADDR];
+    if (!arduinoBurstReadSPI(addr, burstData, CC1120_REGS_EXT_ADDR) ||
+        memcmp(REGS_DEFAULTS, burstData, CC1120_REGS_EXT_ADDR) != 0) {
         Serial.println("ERROR. CC1120 burst read test failed.");
         return false;
     }
     
-    if (!arduinoReadExtAddrSPI(MARCSTATE, &data)) {
+    if (!arduinoReadExtAddrSPI(CC1120_REGS_EXT_MARCSTATE, &data)) {
         Serial.println("ERROR. CC1120 read test failed.");
         return false;
     } else if (data != 0x41) {
@@ -126,7 +126,7 @@ bool checkSPIRead() {
 
     uint8_t extBurstData[3];
     uint8_t expected[3] = {0x00, 0x00, 0x00};
-    if (!arduinoBurstReadExtAddrSPI(FREQ2, extBurstData, 3) ||
+    if (!arduinoBurstReadExtAddrSPI(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
         memcmp(extBurstData, expected, 3) != 0) {
         Serial.println("ERROR. CC1120 burst read test failed.");
         return false;
@@ -150,7 +150,7 @@ bool checkSPIRead() {
  */
 bool checkSPIWrite() {
     uint8_t data;
-    if (!arduinoWriteSPI(FREQOFF0, 0xFF) || !arduinoReadSPI(FREQOFF0, &data)) {
+    if (!arduinoWriteSPI(CC1120_REGS_EXT_FREQOFF0, 0xFF) || !arduinoReadSPI(CC1120_REGS_EXT_FREQOFF0, &data)) {
         Serial.println("ERROR. CC1120 write test failed.");
         return false;
     } else if (data != 0xFF) {
@@ -164,14 +164,14 @@ bool checkSPIWrite() {
 
     uint8_t burstData[4] = {0xFF, 0xFF, 0xFF, 0xFF};
     uint8_t burstDataRead[4];
-    if (!arduinoBurstWriteSPI(SYNC3, burstData, 4) ||
-        !arduinoBurstReadSPI(SYNC3, burstDataRead, 4) ||
+    if (!arduinoBurstWriteSPI(CC1120_REGS_SYNC3, burstData, 4) ||
+        !arduinoBurstReadSPI(CC1120_REGS_SYNC3, burstDataRead, 4) ||
         memcmp(burstData, burstDataRead, 4) != 0) {
         Serial.println("ERROR. CC1120 burst write test failed.");
         return false;
     }
 
-    if (!arduinoWriteExtAddrSPI(FREQ1, 0x80) || !arduinoReadExtAddrSPI(FREQ1, &data)) {
+    if (!arduinoWriteExtAddrSPI(CC1120_REGS_EXT_FREQ1, 0x80) || !arduinoReadExtAddrSPI(CC1120_REGS_EXT_FREQ1, &data)) {
         Serial.println("ERROR. CC1120 SPI write test failed");
         return false;
     } else if (data != 0x80) {
@@ -185,8 +185,8 @@ bool checkSPIWrite() {
 
     uint8_t extBurstData[3] = {0x70, 0x80, 0x00};
     uint8_t extBurstRead[3];
-    if (!arduinoBurstWriteExtAddrSPI(FREQ2, extBurstData, 3) ||
-        !arduinoBurstReadExtAddrSPI(FREQ2, extBurstRead, 3) ||
+    if (!arduinoBurstWriteExtAddrSPI(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
+        !arduinoBurstReadExtAddrSPI(CC1120_REGS_EXT_FREQ2, extBurstRead, 3) ||
         memcmp(extBurstData, extBurstRead, 3) != 0) {
         Serial.println("ERROR. CC1120 SPI write test failed");
         return false;
@@ -205,7 +205,7 @@ bool checkSPIWrite() {
  */
 bool checkStrobe() {
     uint8_t data;
-    if (!arduinoStrobeSPI(SRES) || !arduinoReadExtAddrSPI(MARCSTATE, &data)) {
+    if (!arduinoStrobeSPI(CC1120_REGS_STROBE_SRES) || !arduinoReadExtAddrSPI(CC1120_REGS_EXT_MARCSTATE, &data)) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
     } else if (data != 0x41) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
@@ -230,7 +230,7 @@ bool checkStrobe() {
  */
 bool checkFIFOReadWrite() {
     uint8_t data;
-    if (!arduinoWriteFIFO(0x0A) || !arduinoReadFIFODirect(FIFO_TX_START, &data)) {
+    if (!arduinoWriteFIFO(0x0A) || !arduinoReadFIFODirect(CC1120_REGS_FIFO_TX_START, &data)) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
         return false;
     } else if (data != 0x0A) {
@@ -244,14 +244,14 @@ bool checkFIFOReadWrite() {
     uint8_t burstWriteData[3] = {0x0B, 0x0C, 0x0D};
     uint8_t burstReadData[3];
     if (!arduinoBurstWriteFIFO(burstWriteData, 3) ||
-        !arduinoBurstReadFIFODirect(FIFO_TX_START, burstReadData, 3) ||
+        !arduinoBurstReadFIFODirect(CC1120_REGS_FIFO_TX_START, burstReadData, 3) ||
         memcmp(burstWriteData, burstReadData, 3) != 0) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
         return false;
     }
 
     data = 0x00;
-    if (!arduinoWriteFIFODirect(FIFO_RX_START, 0x0E) ||
+    if (!arduinoWriteFIFODirect(CC1120_REGS_FIFO_RX_START, 0x0E) ||
         !arduinoReadFIFO(data)) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
     } else if (data != 0x0E) {
@@ -264,7 +264,7 @@ bool checkFIFOReadWrite() {
     }
     uint8_t burstWriteData2[3] = {0x0F, 0x10, 0x11};
     uint8_t burstReadData2[3];
-    if (!arduinoBurstWriteFIFODirect(FIFO_RX_START, burstWriteData2, 3) ||
+    if (!arduinoBurstWriteFIFODirect(CC1120_REGS_FIFO_RX_START, burstWriteData2, 3) ||
         !arduinoBurstReadFIFO(burstReadData2, 3) ||
         memcmp(burstWriteData2, burstReadData2, 3) != 0) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
