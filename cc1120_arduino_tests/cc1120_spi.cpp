@@ -1,6 +1,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
-#include "arduino_unit_tests.h"
+#include "cc1120_arduino_tests.h"
 #include "Arduino.h"
 #include <stdint.h>
 #include <SPI.h>

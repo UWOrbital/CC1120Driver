@@ -1,4 +1,4 @@
-#include "cc1120_unit_tests.h"
+#include "cc1120_spi_tests.h"
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "Arduino.h"
@@ -62,7 +62,7 @@ void setRegisterDefaults() {
 }
 
 /**
- * @brief Unit test for SPI read function.
+ * @brief E2E test for SPI read function.
  * Reads through all registers up to the extended register space,
  * and compares values to default values.
  * Burst reads all the values and compares them to the default values.
@@ -137,7 +137,7 @@ bool checkSPIRead() {
 }
 
 /**
- * @brief Unit test for SPI write function.
+ * @brief E2E test for SPI write function.
  * Writes to frequency offset register and extended address space RNDGEN register.
  * Reads the registers to see if the write was successful.
  * Burst writes to the sync word registers, then burst reads to see if the writes were successful.
@@ -196,7 +196,7 @@ bool checkSPIWrite() {
 }
 
 /**
- * @brief Unit test for SPI strobe functionality.
+ * @brief E2E test for SPI strobe functionality.
  * Runs the reset strobe and checks the MARCSTATE register.
  * 
  * @return true - If MARCSTATE is 0x41 after reset.
@@ -220,7 +220,7 @@ bool checkStrobe() {
 }
 
 /**
- * @brief - Unit test for the CC1120's FIFO read and write functionality.
+ * @brief - E2E test for the CC1120's FIFO read and write functionality.
  * Writes to the FIFO and then does a direct read to see if the write was successful.
  * Wries directly to the FIFO and then reads the FIFO to see if the write was successful.
  * 

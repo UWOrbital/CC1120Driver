@@ -1,20 +1,11 @@
-/**
- * @file arduino_unit_tests.ino
- * @author Aryan Kalia
- * @brief File containing the arduino unit tests for the cc1120_spi.cpp file.
- * @version 0.1
- * @date 2022-02-13
- * 
- */
-
 #include <SPI.h>
-#include "arduino_unit_tests.h"
+#include "cc1120_arduino_tests.h"
 #include "cc1120_spi.h"
-#include "cc1120_unit_tests.h"
+#include "cc1120_spi_tests.h"
 #include "cc1120_regs.h"
 
 /**
- * @brief Set up the SPI pins and the CS pin, run unit tests.
+ * @brief Set up the SPI pins and the CS pin, run E2E tests.
  * 
  */
 void setup() {
@@ -29,7 +20,7 @@ void setup() {
     SPI.begin();
     delay(1000);
 
-    Serial.println("Starting unit tests...");
+    Serial.println("Starting E2E tests...");
     bool status = true;
     for(uint8_t i=0; i<3; i++) {
         status &= checkStrobe();
