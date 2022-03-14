@@ -2,7 +2,6 @@
 #define SPI_TESTS_CC1120_H
 
 #include <stdbool.h>
-#include <stdint.h>
 
 /**
  * @brief Set the default values for CC1120 registers.

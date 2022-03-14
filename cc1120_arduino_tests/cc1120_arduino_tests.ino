@@ -1,4 +1,3 @@
-#include <SPI.h>
 #include "cc1120_arduino_tests.h"
 #include "cc1120_spi.h"
 #include "cc1120_spi_tests.h"

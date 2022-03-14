@@ -1,9 +1,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_arduino_tests.h"
-#include "Arduino.h"
-#include <stdint.h>
-#include <SPI.h>
 
 /**
  * @brief Reads a register from the CC1120.
