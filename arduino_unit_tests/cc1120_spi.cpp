@@ -433,7 +433,7 @@ bool sendByteReceiveStatus(uint8_t data) {
 
     uint8_t i=1;
     for (; i <= 5; i++) {
-        ccstatus.v = SPI.transfer(data);
+        ccstatus.data = SPI.transfer(data);
         if (ccstatus.ccst.chip_ready == 1) {
             Serial.print("CC1120 chip not ready. Retrying... (");
             Serial.print(i);

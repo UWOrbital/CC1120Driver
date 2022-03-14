@@ -15,7 +15,7 @@ struct cc_status {
 
 union cc_st {
   struct cc_status ccst;
-  uint8_t v;
+  uint8_t data;
 };
 
 /**
