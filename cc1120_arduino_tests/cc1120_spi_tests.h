@@ -1,5 +1,5 @@
-#ifndef SPI_TESTS_CC1120_H
-#define SPI_TESTS_CC1120_H
+#ifndef CC1120_SPI_TESTS_H
+#define CC1120_SPI_TESTS_H
 
 #include <stdbool.h>
 
@@ -54,4 +54,4 @@ bool cc1120_test_spi_strobe();
  */
 bool cc1120_test_fifo_read_write();
 
-#endif /* SPI_TESTS_CC1120_H */
+#endif /* CC1120_SPI_TESTS_H */

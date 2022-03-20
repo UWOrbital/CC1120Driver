@@ -1,5 +1,5 @@
-#ifndef ARDUINO_CC1120_TESTS_H
-#define ARDUINO_CC1120_TESTS_H
+#ifndef CC1120_ARDUINO_H
+#define CC1120_ARDUINO_H
 
 #include <SPI.h>
 #include "Arduino.h"
@@ -10,4 +10,4 @@ const uint8_t MOSI_PIN = 11;
 const uint8_t MISO_PIN = 12;
 const uint8_t SCLK = 13;
 
-#endif /* ARDUINO_CC1120_TESTS_H */
+#endif /* CC1120_ARDUINO_H */

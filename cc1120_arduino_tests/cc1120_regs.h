@@ -1,5 +1,5 @@
-#ifndef REGS_CC1120_H
-#define REGS_CC1120_H
+#ifndef CC1120_REGS_H
+#define CC1120_REGS_H
 
 // Standard address space registers
 #define CC1120_REGS_IOCFG3              0x00U
@@ -207,4 +207,4 @@
 #define CC1120_REGS_EXT_FIFO_NUM_TXBYTES    0xD8U
 #define CC1120_REGS_EXT_FIFO_NUM_RXBYTES    0xD9U
 
-#endif /* REGS_CC1120_H */
+#endif /* CC1120_REGS_H */

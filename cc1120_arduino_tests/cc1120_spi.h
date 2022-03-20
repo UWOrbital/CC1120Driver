@@ -1,5 +1,5 @@
-#ifndef SPI_CC1120_H
-#define SPI_CC1120_H
+#ifndef CC1120_SPI_H
+#define CC1120_SPI_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -200,4 +200,4 @@ bool cc1120_burst_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
  */
 bool sendByteReceiveStatus(uint8_t data);
 
-#endif /* SPI_CC1120_H */
+#endif /* CC1120_SPI_H */
