@@ -22,10 +22,10 @@ void setup() {
     Serial.println("Starting E2E tests...");
     bool status = true;
     for(uint8_t i=0; i<3; i++) {
-        status &= checkStrobe();
-        status &= checkSPIRead();
-        status &= checkSPIWrite();
-        status &= checkFIFOReadWrite();
+        status &= cc1120_test_spi_strobe();
+        status &= cc1120_test_spi_read();
+        status &= cc1120_test_spi_write();
+        status &= cc1120_test_fifo_read_write();
         if (status) {
             Serial.println("All CC1120 tests passed. Resetting the chip...");
             break;
@@ -40,7 +40,7 @@ void setup() {
         }
     }
 
-    if (!arduinoStrobeSPI(CC1120_REGS_STROBE_SRES)) {
+    if (!cc1120_strobe_spi(CC1120_REGS_STROBE_SRES)) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
 }

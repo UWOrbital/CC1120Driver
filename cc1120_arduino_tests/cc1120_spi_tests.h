@@ -7,7 +7,7 @@
  * @brief Set the default values for CC1120 registers.
  * 
  */
-void setRegisterDefaults();
+void set_regs_defaults();
 
 /**
  * @brief E2E test for SPI read function.
@@ -20,7 +20,7 @@ void setRegisterDefaults();
  * @return false - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-bool checkSPIRead();
+bool cc1120_test_spi_read();
 
 /**
  * @brief E2E test for SPI write function.
@@ -33,7 +33,7 @@ bool checkSPIRead();
  * @return false - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-bool checkSPIWrite();
+bool cc1120_test_spi_write();
 
 /**
  * @brief E2E test for SPI strobe functionality.
@@ -42,7 +42,7 @@ bool checkSPIWrite();
  * @return true - If MARCSTATE is 0x41 after reset.
  * @return false - If MARCSTATE is not 0x41 after reset, or status byte is invalid.
  */
-bool checkStrobe();
+bool cc1120_test_spi_strobe();
 
 /**
  * @brief - E2E test for the CC1120's FIFO read and write functionality.
@@ -52,6 +52,6 @@ bool checkStrobe();
  * @return true - If the FIFO read and write tests pass.
  * @return false - If the FIFO read and write tests fail.
  */
-bool checkFIFOReadWrite();
+bool cc1120_test_fifo_read_write();
 
 #endif /* SPI_TESTS_CC1120_H */
