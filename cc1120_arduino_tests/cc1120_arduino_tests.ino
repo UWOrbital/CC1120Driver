@@ -21,7 +21,8 @@ void setup() {
 
     Serial.println("Starting E2E tests...");
     bool status = true;
-    for(uint8_t i=0; i<3; i++) {
+    uint8_t i;
+    for(i = 0; i < 3; i++) {
         status &= cc1120_test_spi_strobe();
         status &= cc1120_test_spi_read();
         status &= cc1120_test_spi_write();
