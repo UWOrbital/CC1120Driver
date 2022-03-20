@@ -72,13 +72,16 @@ void set_regs_defaults() {
  *                 or status byte is invalid.
  */
 bool cc1120_test_spi_read() {
+    bool status = true;
     set_regs_defaults();
     uint8_t addr = 0x00U;
     uint8_t data;
     
     while (addr < CC1120_REGS_EXT_ADDR) {
-        if (!cc1120_read_spi(addr, &data, 1))
-            return false;
+        if (!cc1120_read_spi(addr, &data, 1)) {
+            status = false;
+            break;
+        }
 
         /* DEBUG
         Serial.print(addr);
@@ -95,44 +98,50 @@ bool cc1120_test_spi_read() {
             Serial.print(data, HEX);
             Serial.print(", expected ");
             Serial.println(REGS_DEFAULTS[addr], HEX);
-            return false;
+            status = false;
+            break;
         } else {
             addr++;
         }
     }
 
-
-    addr = 0x00U;
-    uint8_t burstData[CC1120_REGS_EXT_ADDR];
-    if (!cc1120_read_spi(addr, burstData, CC1120_REGS_EXT_ADDR) ||
-        memcmp(REGS_DEFAULTS, burstData, CC1120_REGS_EXT_ADDR) != 0) {
-        Serial.println("ERROR. CC1120 burst read test failed.");
-        return false;
+    if (status) {
+        addr = 0x00U;
+        uint8_t burstData[CC1120_REGS_EXT_ADDR];
+        if (!cc1120_read_spi(addr, burstData, CC1120_REGS_EXT_ADDR) ||
+            memcmp(REGS_DEFAULTS, burstData, CC1120_REGS_EXT_ADDR) != 0) {
+            Serial.println("ERROR. CC1120 burst read test failed.");
+            status = false;
+        }
     }
     
-    if (!cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, &data, 1)) {
-        Serial.println("ERROR. CC1120 read test failed.");
-        return false;
-    } else if (data != 0x41U) {
-        Serial.println("ERROR. CC1120 read test failed.");
-        Serial.print("MARCSTATE read ");
-        Serial.print(data, HEX);
-        Serial.print(", expected ");
-        Serial.println(0x41U, HEX);
-        return false;
+    if (status) {
+        if (!cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, &data, 1)) {
+            Serial.println("ERROR. CC1120 read test failed.");
+            status = false;
+        } else if (data != 0x41U) {
+            Serial.println("ERROR. CC1120 read test failed.");
+            Serial.print("MARCSTATE read ");
+            Serial.print(data, HEX);
+            Serial.print(", expected ");
+            Serial.println(0x41U, HEX);
+            status = false;
+        }
     }
 
-    uint8_t extBurstData[3];
-    uint8_t expected[3] = {0x00U, 0x00U, 0x00U};
-    if (!cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
-        memcmp(extBurstData, expected, 3) != 0) {
-        Serial.println("ERROR. CC1120 burst read test failed.");
-        return false;
+    if (status) {
+        uint8_t extBurstData[3];
+        uint8_t expected[3] = {0x00U, 0x00U, 0x00U};
+        if (!cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
+            memcmp(extBurstData, expected, 3) != 0) {
+            Serial.println("ERROR. CC1120 burst read test failed.");
+            status = false;
+        }
     }
 
     Serial.println("CC1120 SPI read test passed");
 
-    return true;
+    return status;
 }
 
 /**
@@ -147,53 +156,60 @@ bool cc1120_test_spi_read() {
  *                 or status byte is invalid.
  */
 bool cc1120_test_spi_write() {
+    bool status = true;
     uint8_t w_data = 0xFFU;
     uint8_t r_data;
     if (!cc1120_write_spi(CC1120_REGS_EXT_FREQOFF0, &w_data, 1) || !cc1120_read_spi(CC1120_REGS_EXT_FREQOFF0, &r_data, 1)) {
         Serial.println("ERROR. CC1120 write test failed.");
-        return false;
+        status = false;
     } else if (r_data != 0xFFU) {
         Serial.println("ERROR. CC1120 SPI write test failed");
         Serial.print("FREQOFF0 read ");
         Serial.print(r_data, HEX);
         Serial.print(", expected ");
         Serial.println(0xFFU, HEX);
-        return false;
+        status = false;
     }
 
-    uint8_t burstData[4] = {0xFFU, 0xFFU, 0xFFU, 0xFFU};
-    uint8_t burstDataRead[4];
-    if (!cc1120_write_spi(CC1120_REGS_SYNC3, burstData, 4) ||
-        !cc1120_read_spi(CC1120_REGS_SYNC3, burstDataRead, 4) ||
-        memcmp(burstData, burstDataRead, 4) != 0) {
-        Serial.println("ERROR. CC1120 burst write test failed.");
-        return false;
+    if (status) {
+        uint8_t burstData[4] = {0xFFU, 0xFFU, 0xFFU, 0xFFU};
+        uint8_t burstDataRead[4];
+        if (!cc1120_write_spi(CC1120_REGS_SYNC3, burstData, 4) ||
+            !cc1120_read_spi(CC1120_REGS_SYNC3, burstDataRead, 4) ||
+            memcmp(burstData, burstDataRead, 4) != 0) {
+            Serial.println("ERROR. CC1120 burst write test failed.");
+            status = false;
+        }
     }
 
-    w_data = 0x80U;
-    if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_FREQ1, &w_data, 1) || !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ1, &r_data, 1)) {
-        Serial.println("ERROR. CC1120 SPI write test failed");
-        return false;
-    } else if (r_data != 0x80U) {
-        Serial.println("ERROR. CC1120 SPI write test failed");
-        Serial.print("FREQ1 read ");
-        Serial.print(r_data, HEX);
-        Serial.print(", expected ");
-        Serial.println(0x80U, HEX);
-        return false;
+    if (status) {
+        w_data = 0x80U;
+        if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_FREQ1, &w_data, 1) || !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ1, &r_data, 1)) {
+            Serial.println("ERROR. CC1120 SPI write test failed");
+            status = false;
+        } else if (r_data != 0x80U) {
+            Serial.println("ERROR. CC1120 SPI write test failed");
+            Serial.print("FREQ1 read ");
+            Serial.print(r_data, HEX);
+            Serial.print(", expected ");
+            Serial.println(0x80U, HEX);
+            status = false;
+        }
     }
 
-    uint8_t extBurstData[3] = {0x70U, 0x80U, 0x00U};
-    uint8_t extBurstRead[3];
-    if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
-        !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstRead, 3) ||
-        memcmp(extBurstData, extBurstRead, 3) != 0) {
-        Serial.println("ERROR. CC1120 SPI write test failed");
-        return false;
-    } 
+    if (status) {
+        uint8_t extBurstData[3] = {0x70U, 0x80U, 0x00U};
+        uint8_t extBurstRead[3];
+        if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstData, 3) ||
+            !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_FREQ2, extBurstRead, 3) ||
+            memcmp(extBurstData, extBurstRead, 3) != 0) {
+            Serial.println("ERROR. CC1120 SPI write test failed");
+            status = false;
+        }
+    }
     
     Serial.println("CC1120 SPI write test passed");
-    return true;
+    return status;
 }
 
 /**
@@ -204,7 +220,9 @@ bool cc1120_test_spi_write() {
  * @return false - If MARCSTATE is not 0x41 after reset, or status byte is invalid.
  */
 bool cc1120_test_spi_strobe() {
+    bool status = true;
     uint8_t data;
+    
     if (!cc1120_strobe_spi(CC1120_STROBE_SRES) || !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, &data, 1)) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
     } else if (data != 0x41U) {
@@ -213,11 +231,11 @@ bool cc1120_test_spi_strobe() {
         Serial.print(data, HEX);
         Serial.print(", expected ");
         Serial.println(0x41U, HEX);
-        return false;
+        status = false;
     }
     
     Serial.println("CC1120 SPI strobe test passed");
-    return true;    
+    return status;    
 }
 
 /**
@@ -229,49 +247,58 @@ bool cc1120_test_spi_strobe() {
  * @return false - If the FIFO read and write tests fail.
  */
 bool cc1120_test_fifo_read_write() {
+    bool status = true;
     uint8_t w_data = 0x0AU;
     uint8_t r_data;
     if (!cc1120_write_fifo(w_data, 1) || !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, &r_data, 1)) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
-        return false;
+        status = false;
     } else if (r_data != 0x0AU) {
         Serial.println("ERROR. CC1120 FIFO test failed");
         Serial.print("FIFO_TX_START read ");
         Serial.print(r_data, HEX);
         Serial.print(", expected ");
         Serial.println(0x0A, HEX);
-        return false;
-    }
-    uint8_t burstWriteData[3] = {0x0BU, 0x0CU, 0x0DU};
-    uint8_t burstReadData[3];
-    if (!cc1120_write_fifo(burstWriteData, 3) ||
-        !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, burstReadData, 3) ||
-        memcmp(burstWriteData, burstReadData, 3) != 0) {
-        Serial.println("ERROR. CC1120 FIFO test failed.");
-        return false;
+        status = false;
     }
 
-    w_data = 0x0EU;
-    if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, w_data, 1) ||
-        !cc1120_read_fifo(r_data, 1)) {
-        Serial.println("ERROR. CC1120 FIFO test failed.");
-    } else if (r_data != 0x0EU) {
-        Serial.println("ERROR. CC1120 FIFO test failed");
-        Serial.print("FIFO_RX_START read ");
-        Serial.print(r_data, HEX);
-        Serial.print(", expected ");
-        Serial.println(0x0EU, HEX);
-        return false;
+    if (status) {
+        uint8_t burstWriteData[3] = {0x0BU, 0x0CU, 0x0DU};
+        uint8_t burstReadData[3];
+        if (!cc1120_write_fifo(burstWriteData, 3) ||
+            !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, burstReadData, 3) ||
+            memcmp(burstWriteData, burstReadData, 3) != 0) {
+            Serial.println("ERROR. CC1120 FIFO test failed.");
+            status = false;
+        }
     }
-    uint8_t burstWriteData2[3] = {0x0FU, 0x10U, 0x11U};
-    uint8_t burstReadData2[3];
-    if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, burstWriteData2, 3) ||
-        !cc1120_read_fifo(burstReadData2, 3) ||
-        memcmp(burstWriteData2, burstReadData2, 3) != 0) {
-        Serial.println("ERROR. CC1120 FIFO test failed.");
-        return false;
+
+    if (status) {
+        w_data = 0x0EU;
+        if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, w_data, 1) ||
+            !cc1120_read_fifo(r_data, 1)) {
+            Serial.println("ERROR. CC1120 FIFO test failed.");
+        } else if (r_data != 0x0EU) {
+            Serial.println("ERROR. CC1120 FIFO test failed");
+            Serial.print("FIFO_RX_START read ");
+            Serial.print(r_data, HEX);
+            Serial.print(", expected ");
+            Serial.println(0x0EU, HEX);
+            status = false;
+        }
+    }
+
+    if (status) {
+        uint8_t burstWriteData2[3] = {0x0FU, 0x10U, 0x11U};
+        uint8_t burstReadData2[3];
+        if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, burstWriteData2, 3) ||
+            !cc1120_read_fifo(burstReadData2, 3) ||
+            memcmp(burstWriteData2, burstReadData2, 3) != 0) {
+            Serial.println("ERROR. CC1120 FIFO test failed.");
+            status = false;
+        }
     }
 
     Serial.println("CC1120 FIFO test passed");
-    return true;
+    return status;
 }

@@ -19,7 +19,7 @@ union cc_st {
 };
 
 /**
- * @brief - Reads registers from the CC1120.
+ * @brief - Reads from consecutive registers from the CC1120.
  * 
  * @param addr - The address of the first register to read.
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
@@ -30,7 +30,7 @@ union cc_st {
 bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
- * @brief - Reads extended address space registers from the CC1120
+ * @brief - Reads from consecutive extended address space registers on the CC1120
  * 
  * @param addr - The address of the first register to read.
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
@@ -41,10 +41,10 @@ bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
 bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
- * @brief - Writes consecutive registers on the CC1120 in burst mode.
+ * @brief - Writes to consecutive registers on the CC1120.
  * 
  * @param addr - The address of the first register to write to.
- * @param data - The array of data to write to the registers.
+ * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
@@ -52,10 +52,10 @@ bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
- * @brief - Writes consecutive extended address space registers on the CC1120 in burst mode.
+ * @brief - Writes to consecutive extended address space registers on the CC1120.
  * 
  * @param addr - The address of the first register to write to.
- * @param data - The array of data to write to the registers.
+ * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
@@ -72,9 +72,9 @@ bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 bool cc1120_strobe_spi(uint8_t addr);
 
 /**
- * @brief - Reads consecutive registers from the FIFO memory in burst mode.
+ * @brief - Reads consecutive registers from the FIFO memory.
  * 
- * @param data - The array to store the read data.
+ * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
  * @return true - If the read was successful.
  * @return false - If the status byte is invalid.
@@ -82,9 +82,9 @@ bool cc1120_strobe_spi(uint8_t addr);
 bool cc1120_read_fifo(uint8_t data[], uint8_t len);
 
 /**
- * @brief - Writes consecutive registers to the FIFO memory in burst mode.
+ * @brief - Writes consecutive registers to the FIFO memory.
  * 
- * @param data - The array of data to write to the FIFO.
+ * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the status byte is invalid.
@@ -92,10 +92,10 @@ bool cc1120_read_fifo(uint8_t data[], uint8_t len);
 bool cc1120_write_fifo(uint8_t data[], uint8_t len);
 
 /**
- * @brief - Reads consecutive registers directly from the FIFO on the CC1120 in burst mode.
+ * @brief - Reads consecutive registers directly from the FIFO on the CC1120.
  * 
  * @param addr - The address of the first register to read. Range 0x00 - 0xFF.
- * @param data - The array to store the read data.
+ * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
  * @return true - If the read was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
@@ -103,10 +103,10 @@ bool cc1120_write_fifo(uint8_t data[], uint8_t len);
 bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
- * @brief - Writes consecutive registers directly to the FIFO on the CC1120 in burst mode.
+ * @brief - Writes consecutive registers directly to the FIFO on the CC1120.
  * 
  * @param addr - The address of the first register to write to. Range 0x00 - 0xFF.
- * @param data - The array of data to write to the registers.
+ * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.

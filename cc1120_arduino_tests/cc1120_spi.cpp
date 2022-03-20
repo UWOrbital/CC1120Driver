@@ -12,30 +12,36 @@
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
 
-    uint8_t header = (len > 1) ? R_BIT | BURST_BIT | addr : R_BIT | addr;
+    if (status) {
+        uint8_t header = (len > 1) ? R_BIT | BURST_BIT | addr : R_BIT | addr;
 
-    union cc_st ccstatus;
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
+        }
     }
-    uint8_t i;
-    for(i = 0; i < len; i++) {
-        data[i] = SPI.transfer(0x00);
+
+    if (status) {
+        uint8_t i;
+        for(i = 0; i < len; i++) {
+            data[i] = SPI.transfer(0x00);
+        }
     }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -48,33 +54,41 @@ bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (addr > CC1120_REGS_EXT_PA_CFG3 && addr < CC1120_REGS_EXT_WOR_TIME1 ||
         addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST ||
         addr > CC1120_REGS_EXT_FIFO_NUM_RXBYTES) {
         Serial.println("Not a valid register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
     
-    uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_EXT_ADDR :
-                                 R_BIT | CC1120_REGS_EXT_ADDR;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+    if (status) {
+        uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_EXT_ADDR :
+                                     R_BIT | CC1120_REGS_EXT_ADDR;
+
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
+        }
     }
-    SPI.transfer(addr);
-    uint8_t i;
-    for(i = 0; i < len; i++) {
-        data[i] = SPI.transfer(0xFF);
+
+    if (status) {
+        SPI.transfer(addr);
+        uint8_t i;
+        for(i = 0; i < len; i++) {
+            data[i] = SPI.transfer(0xFF);
+        }
     }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -86,33 +100,39 @@ bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return true - If the write was successful.
  * @return false - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {    
+bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if(addr >= CC1120_REGS_EXT_ADDR) {
         Serial.println("Not a valid register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
 
-    uint8_t header = (len > 1) ? BURST_BIT | addr : addr;
+    if (status) {
+        uint8_t header = (len > 1) ? BURST_BIT | addr : addr;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
-    }
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        if (!send_byte_receive_status(data[i])) {
-            digitalWrite(CS, HIGH);
-            return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
         }
     }
+
+    if (status) {
+        uint8_t i;
+        for(i = 0; i < len; i++) {
+            if (!send_byte_receive_status(data[i])) {
+                status = false;
+            }
+        }
+    }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -125,39 +145,47 @@ bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (addr > CC1120_REGS_EXT_PA_CFG3 && addr < CC1120_REGS_EXT_WOR_TIME1 ||
         addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST ||
         addr > CC1120_REGS_EXT_FIFO_NUM_RXBYTES) {
         Serial.println("Not a valid register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
     
-    uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_EXT_ADDR : CC1120_REGS_EXT_ADDR;
+    if (status) {
+        uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_EXT_ADDR : CC1120_REGS_EXT_ADDR;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
-    }
-    if (SPI.transfer(addr) != 0x00) {
-        Serial.println("CC1120 write ext addr failed");
-        digitalWrite(CS, HIGH);
-        return false;
-    }
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        if (!send_byte_receive_status(data[i])) {
-            digitalWrite(CS, HIGH);
-            return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
         }
     }
+
+    if (status) {
+        if (SPI.transfer(addr) != 0x00) {
+            Serial.println("CC1120 write ext addr failed");
+            status = false;
+        }
+    }
+    
+    if (status) {
+        uint8_t i;
+        for(i = 0; i < len; i++) {
+            if (!send_byte_receive_status(data[i])) {
+                status = false;
+            }
+        }
+    }
+    
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -168,18 +196,22 @@ bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_strobe_spi(uint8_t addr) {
+    bool status = true;
+
     if (addr < CC1120_STROBE_SRES || addr > CC1120_STROBE_SNOP) {
         Serial.println("Not a strobe register!");
-        return false;
+        status = false;
     }
 
-    digitalWrite(CS, LOW);    
-    if (!send_byte_receive_status(addr)) {
-        digitalWrite(CS, HIGH);
-        return false;
+    if (status) {
+        digitalWrite(CS, LOW);    
+        if (!send_byte_receive_status(addr)) {
+            status = false;
+        }
     }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -191,25 +223,31 @@ bool cc1120_strobe_spi(uint8_t addr) {
  * @return false - If the status byte is invalid.
  */
 bool cc1120_read_fifo(uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
 
-    uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
-                                 R_BIT | CC1120_REGS_FIFO_ACCESS_STD;
+    if (status) {
+        uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
+                                    R_BIT | CC1120_REGS_FIFO_ACCESS_STD;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
+        }
     }
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        data[i] = SPI.transfer(0xFF);
+
+    if (status) {
+        uint8_t i = 0;
+        for(i = 0; i < len; i++) {
+            data[i] = SPI.transfer(0xFF);
+        }
     }
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -221,25 +259,33 @@ bool cc1120_read_fifo(uint8_t data[], uint8_t len) {
  * @return false - If the status byte is invalid.
  */
 bool cc1120_write_fifo(uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
 
-    uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
-                                 CC1120_REGS_FIFO_ACCESS_STD;
+    if (status) {
+        uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
+                                    CC1120_REGS_FIFO_ACCESS_STD;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            digitalWrite(CS, HIGH);
+            status = false;
+        }
     }
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        SPI.transfer(data[i]);
+
+    if (status) {
+        uint8_t i = 0;
+        for(i = 0; i < len; i++) {
+            SPI.transfer(data[i]);
+        }
     }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -252,31 +298,39 @@ bool cc1120_write_fifo(uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
 
-    uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_DIR :
-                                 R_BIT | CC1120_REGS_FIFO_ACCESS_DIR;
+    if (status) {
+        uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_DIR :
+                                    R_BIT | CC1120_REGS_FIFO_ACCESS_DIR;
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            digitalWrite(CS, HIGH);
+            status = false;
+        }
     }
-    SPI.transfer(addr);
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        data[i] = SPI.transfer(0xff);
+
+    if (status) {
+        SPI.transfer(addr);
+        uint8_t i = 0;
+        for(i = 0; i < len; i++) {
+            data[i] = SPI.transfer(0xff);
+        }
     }
+
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -289,32 +343,38 @@ bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
+    bool status = true;
+
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
-        return false;
+        status = false;
     }
 
     if (len < 1) {
         Serial.println("Not a valid length!");
-        return false;
+        status = false;
     }
     
-    uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_FIFO_ACCESS_DIR :
-                                 CC1120_REGS_FIFO_ACCESS_DIR;
+    if (status) {
+        uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_FIFO_ACCESS_DIR :
+                                    CC1120_REGS_FIFO_ACCESS_DIR;
 
 
-    digitalWrite(CS, LOW);
-    if (!send_byte_receive_status(header)) {
-        digitalWrite(CS, HIGH);
-        return false;
+        digitalWrite(CS, LOW);
+        if (!send_byte_receive_status(header)) {
+            status = false;
+        }
     }
-    SPI.transfer(addr);
-    uint8_t i = 0;
-    for(i = 0; i < len; i++) {
-        SPI.transfer(data[i]);
+
+    if (status) {
+        SPI.transfer(addr);
+        uint8_t i = 0;
+        for(i = 0; i < len; i++) {
+            SPI.transfer(data[i]);
+        }
     }
     digitalWrite(CS, HIGH);
-    return true;
+    return status;
 }
 
 /**
@@ -325,6 +385,7 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the status byte is invalid.
  */
 bool send_byte_receive_status(uint8_t data) {
+    bool status = false;
     union cc_st ccstatus;
 
     uint8_t i;
@@ -335,9 +396,10 @@ bool send_byte_receive_status(uint8_t data) {
             Serial.print(i);
             Serial.println("/5)");
         } else {
-            return true;
+            status = true;
+            break;
         }
     }
 
-    return false;
+    return status;
 }
