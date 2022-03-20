@@ -321,7 +321,7 @@ bool cc1120_burst_write_fifo(uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_read_fifo_direct(uint8_t addr, uint8_t *data) {
-    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
+    if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
@@ -347,7 +347,7 @@ bool cc1120_read_fifo_direct(uint8_t addr, uint8_t *data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_burst_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
-    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
+    if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
@@ -374,7 +374,7 @@ bool cc1120_burst_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data) {
-    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
+    if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }
@@ -400,7 +400,7 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data) {
  * @return false - If the register is not valid, or the status byte is invalid.
  */
 bool cc1120_burst_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
-    if (addr < CC1120_REGS_FIFO_TX_START || addr > CC1120_REGS_FIFO_RX_END) {
+    if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         Serial.println("Not a valid FIFO register!");
         return false;
     }

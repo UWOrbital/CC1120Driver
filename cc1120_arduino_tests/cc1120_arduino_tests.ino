@@ -40,7 +40,7 @@ void setup() {
         }
     }
 
-    if (!cc1120_strobe_spi(CC1120_REGS_STROBE_SRES)) {
+    if (!cc1120_strobe_spi(CC1120_STROBE_SRES)) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
 }

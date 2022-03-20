@@ -54,27 +54,27 @@
 #define CC1120_REGS_EXT_ADDR            0x2FU
 
 // Strobe command registers
-#define CC1120_REGS_STROBE_SRES         0x30U
-#define CC1120_REGS_STROBE_SFSTXON      0x31U
-#define CC1120_REGS_STROBE_SXOFF        0x32U
-#define CC1120_REGS_STROBE_SCAL         0x33U
-#define CC1120_REGS_STROBE_SRX          0x34U
-#define CC1120_REGS_STROBE_STX          0x35U
-#define CC1120_REGS_STROBE_SIDLE        0x36U
-#define CC1120_REGS_STROBE_SWOR         0x38U
-#define CC1120_REGS_STROBE_SPWD         0x39U
-#define CC1120_REGS_STROBE_SFRX         0x3AU
-#define CC1120_REGS_STROBE_SFTX         0x3BU
-#define CC1120_REGS_STROBE_SWORRST      0x3CU
-#define CC1120_REGS_STROBE_SNOP         0x3DU
+#define CC1120_STROBE_SRES              0x30U
+#define CC1120_STROBE_SFSTXON           0x31U
+#define CC1120_STROBE_SXOFF             0x32U
+#define CC1120_STROBE_SCAL              0x33U
+#define CC1120_STROBE_SRX               0x34U
+#define CC1120_STROBE_STX               0x35U
+#define CC1120_STROBE_SIDLE             0x36U
+#define CC1120_STROBE_SWOR              0x38U
+#define CC1120_STROBE_SPWD              0x39U
+#define CC1120_STROBE_SFRX              0x3AU
+#define CC1120_STROBE_SFTX              0x3BU
+#define CC1120_STROBE_SWORRST           0x3CU
+#define CC1120_STROBE_SNOP              0x3DU
 
 // FIFO access registers
 #define CC1120_REGS_FIFO_ACCESS_DIR     0x3EU
 #define CC1120_REGS_FIFO_ACCESS_STD     0x3FU
-#define CC1120_REGS_FIFO_TX_START       0x00U
-#define CC1120_REGS_FIFO_TX_END         0x7FU
-#define CC1120_REGS_FIFO_RX_START       0x80U
-#define CC1120_REGS_FIFO_RX_END         0xFFU
+#define CC1120_FIFO_TX_START            0x00U
+#define CC1120_FIFO_TX_END              0x7FU
+#define CC1120_FIFO_RX_START            0x80U
+#define CC1120_FIFO_RX_END              0xFFU
 
 // EXTENDED REGISTER SPACE
 #define CC1120_REGS_EXT_IF_MIX_CFG          0x00U

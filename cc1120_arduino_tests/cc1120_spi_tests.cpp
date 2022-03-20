@@ -203,7 +203,7 @@ bool cc1120_test_spi_write() {
  */
 bool cc1120_test_spi_strobe() {
     uint8_t data;
-    if (!cc1120_strobe_spi(CC1120_REGS_STROBE_SRES) || !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, &data)) {
+    if (!cc1120_strobe_spi(CC1120_STROBE_SRES) || !cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, &data)) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
     } else if (data != 0x41) {
         Serial.println("ERROR. CC1120 SPI strobe test failed");
@@ -228,7 +228,7 @@ bool cc1120_test_spi_strobe() {
  */
 bool cc1120_test_fifo_read_write() {
     uint8_t data;
-    if (!cc1120_write_fifo(0x0A) || !cc1120_read_fifo_direct(CC1120_REGS_FIFO_TX_START, &data)) {
+    if (!cc1120_write_fifo(0x0A) || !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, &data)) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
         return false;
     } else if (data != 0x0A) {
@@ -242,14 +242,14 @@ bool cc1120_test_fifo_read_write() {
     uint8_t burstWriteData[3] = {0x0B, 0x0C, 0x0D};
     uint8_t burstReadData[3];
     if (!cc1120_burst_write_fifo(burstWriteData, 3) ||
-        !cc1120_burst_read_fifo_direct(CC1120_REGS_FIFO_TX_START, burstReadData, 3) ||
+        !cc1120_burst_read_fifo_direct(CC1120_FIFO_TX_START, burstReadData, 3) ||
         memcmp(burstWriteData, burstReadData, 3) != 0) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
         return false;
     }
 
     data = 0x00;
-    if (!cc1120_write_fifo_direct(CC1120_REGS_FIFO_RX_START, 0x0E) ||
+    if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, 0x0E) ||
         !cc1120_read_fifo(data)) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
     } else if (data != 0x0E) {
@@ -262,7 +262,7 @@ bool cc1120_test_fifo_read_write() {
     }
     uint8_t burstWriteData2[3] = {0x0F, 0x10, 0x11};
     uint8_t burstReadData2[3];
-    if (!cc1120_burst_write_fifo_direct(CC1120_REGS_FIFO_RX_START, burstWriteData2, 3) ||
+    if (!cc1120_burst_write_fifo_direct(CC1120_FIFO_RX_START, burstWriteData2, 3) ||
         !cc1120_burst_read_fifo(burstReadData2, 3) ||
         memcmp(burstWriteData2, burstReadData2, 3) != 0) {
         Serial.println("ERROR. CC1120 FIFO test failed.");
