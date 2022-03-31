@@ -1,23 +1,11 @@
-#include "cc1120_setup.h"
+#include "cc1120_setup_transmit.h"
 
+#include "cc1120_utility.h"
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
-
-/**
- * @brief Gets the nth to kth bits of an unsigned integer.
- *
- * @param number - The number to get bits from.
- * @param start - The lowest bit to get (0-indexed).
- * @param end - the highest bit to get (0-indexed).
- * @return The integer equal to the slice of bits taken.
- */
-int NtoKBits(int number, int start, int end)
-{
-    return (number >> start) & ((1 << (end + 1)) - 1);
-}
 
 /**
  * @brief Sets modulation format to 2-GFSK.

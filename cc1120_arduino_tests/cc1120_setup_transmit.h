@@ -1,8 +1,7 @@
-#ifndef SETUP_CC1120_H
-#define SETUP_CC1120_H
+#ifndef SETUP_TRANSMIT_CC1120_H
+#define SETUP_TRANSMIT_CC1120_H
 
 #define FXOSC 32000000
-int NtoKBits(int number, int start, int end);
 void setGSFK();
 bool setSymbolRate(int symbolRate);
 bool configureTransition(char mode[], char state[]);
@@ -21,4 +20,4 @@ bool configPreamble(int preambleWord, int numPreamble);
 bool setVCOFrequency(int frequency);
 bool setRFFrequency(int frequency);
 
-#endif /* SETUP_CC1120_H */
+#endif /* SETUP_TRANSMIT_CC1120_H */
