@@ -1,7 +1,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_mcu.h"
-#include "cc1120_logging.h"
 
 /**
  * @brief - Reads from consecutive registers from the CC1120.
@@ -242,7 +241,7 @@ bool cc1120_read_fifo(uint8_t data[], uint8_t len) {
     }
 
     if (status) {
-        uint8_t i = 0;
+        uint8_t i;
         for(i = 0; i < len; i++) {
             data[i] = mcu_cc1120_spi_transfer(0xFF);
         }
@@ -278,7 +277,7 @@ bool cc1120_write_fifo(uint8_t data[], uint8_t len) {
     }
 
     if (status) {
-        uint8_t i = 0;
+        uint8_t i;
         for(i = 0; i < len; i++) {
             mcu_cc1120_spi_transfer(data[i]);
         }
@@ -322,7 +321,7 @@ bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
 
     if (status) {
         mcu_cc1120_spi_transfer(addr);
-        uint8_t i = 0;
+        uint8_t i;
         for(i = 0; i < len; i++) {
             data[i] = mcu_cc1120_spi_transfer(0xff);
         }
@@ -367,7 +366,7 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
 
     if (status) {
         mcu_cc1120_spi_transfer(addr);
-        uint8_t i = 0;
+        uint8_t i;
         for(i = 0; i < len; i++) {
             mcu_cc1120_spi_transfer(data[i]);
         }

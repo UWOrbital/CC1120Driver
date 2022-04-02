@@ -124,7 +124,8 @@ bool cc1120_test_spi_read() {
         }
     }
 
-    mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI read test passed.\n");
+    if (status)
+        mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI read test passed.\n");
 
     return status;
 }
@@ -187,7 +188,9 @@ bool cc1120_test_spi_write() {
         }
     }
     
-    mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI write test passed.\n");
+    if (status)
+        mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI write test passed.\n");
+    
     return status;
 }
 
@@ -210,7 +213,9 @@ bool cc1120_test_spi_strobe() {
         status = false;
     }
     
-    mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI strobe test passed.\n");
+    if (status)
+        mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 SPI strobe test passed.\n");
+    
     return status;    
 }
 
@@ -226,7 +231,7 @@ bool cc1120_test_fifo_read_write() {
     bool status = true;
     uint8_t w_data = 0x0AU;
     uint8_t r_data;
-    if (!cc1120_write_fifo(w_data, 1) || !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, &r_data, 1)) {
+    if (!cc1120_write_fifo(&w_data, 1) || !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, &r_data, 1)) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
         status = false;
     } else if (r_data != 0x0AU) {
@@ -235,11 +240,13 @@ bool cc1120_test_fifo_read_write() {
         status = false;
     }
 
+    
+
     if (status) {
         uint8_t burstWriteData[3] = {0x0BU, 0x0CU, 0x0DU};
         uint8_t burstReadData[3];
         if (!cc1120_write_fifo(burstWriteData, 3) ||
-            !cc1120_read_fifo_direct(CC1120_FIFO_TX_START, burstReadData, 3) ||
+            !cc1120_read_fifo_direct(CC1120_FIFO_TX_START+1, burstReadData, 3) ||
             memcmp(burstWriteData, burstReadData, 3) != 0) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
             status = false;
@@ -247,10 +254,16 @@ bool cc1120_test_fifo_read_write() {
     }
 
     if (status) {
+        uint8_t rxLastPos = 5;
+        // When the size of the RXFIFO is 0, the first byte must be ignored. See section 3.2.3 of datasheet.
+        uint8_t ignore;
         w_data = 0x0EU;
-        if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, w_data, 1) ||
-            !cc1120_read_fifo(r_data, 1)) {
+        if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_RXLAST, &rxLastPos, 1);
+                !cc1120_write_fifo_direct(CC1120_FIFO_RX_START, &w_data, 1) ||
+                !cc1120_read_fifo(&ignore, 1) ||
+                !cc1120_read_fifo(&r_data, 1)) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
+            status = false;
         } else if (r_data != 0x0EU) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
             mcu_log(CC1120_LOG_LEVEL_ERROR, "FIFO_RX_START read %x, expected %x\n", r_data, 0x0EU);
@@ -261,7 +274,7 @@ bool cc1120_test_fifo_read_write() {
     if (status) {
         uint8_t burstWriteData2[3] = {0x0FU, 0x10U, 0x11U};
         uint8_t burstReadData2[3];
-        if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START, burstWriteData2, 3) ||
+        if (!cc1120_write_fifo_direct(CC1120_FIFO_RX_START+1, burstWriteData2, 3) ||
             !cc1120_read_fifo(burstReadData2, 3) ||
             memcmp(burstWriteData2, burstReadData2, 3) != 0) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
@@ -269,6 +282,8 @@ bool cc1120_test_fifo_read_write() {
         }
     }
 
-    mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 FIFO test passed.\n");
+    if (status)
+        mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 FIFO test passed.\n");
+    
     return status;
 }

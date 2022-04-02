@@ -16,9 +16,9 @@ void mcu_log(cc1120_log_level_t level, char str[], ...) {
     char buf[500];
     vsnprintf(buf, 500, str, args);
 
-    if (level <= CC1120_SERIAL_LOG_LEVEL && level != CC1120_LOG_LEVEL_OFF)
+    if (level <= CC1120_SERIAL_LOG_LEVEL)
         mcu_serial_log(level, buf);
-    if (level <= CC1120_FILE_LOG_LEVEL && level != CC1120_LOG_LEVEL_OFF)
+    if (level <= CC1120_FILE_LOG_LEVEL)
         mcu_file_log(level, buf);
 
     va_end(args);
@@ -46,9 +46,6 @@ void mcu_serial_log(cc1120_log_level_t level, char str[]) {
  * @param str - The string to log.
  */
 void mcu_file_log(cc1120_log_level_t level, char str[]) {
-    #ifdef CC1120_ARDUINO_H
-    arduino_file_log(level, str);
-    #endif
     #ifdef CC1120_RM46_H
     rm46_file_log(level, str);
     #endif

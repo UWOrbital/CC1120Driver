@@ -67,17 +67,6 @@ void arduino_serial_log(cc1120_log_level_t level, char str[]) {
 }
 
 /**
- * @brief Logs a string to a file.
- * 
- * @param level - The log level.
- * @param str - The string to log.
- */
-void arduino_file_log(cc1120_log_level_t level, char str[]) {
-    /* Fill in later */
-    return;
-}
-
-/**
  * @brief Simultaneously sends and receives a byte over CC1120 SPI interface
  * 
  * @param data - Data to transfer 
