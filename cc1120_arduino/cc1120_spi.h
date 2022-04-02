@@ -120,6 +120,6 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
  * @return true - If the status byte is valid.
  * @return false - If the status byte is invalid.
  */
-bool send_byte_receive_status(uint8_t data);
+bool cc1120_send_byte_receive_status(uint8_t data);
 
 #endif /* CC1120_SPI_H */
