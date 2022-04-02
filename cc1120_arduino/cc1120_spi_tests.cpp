@@ -258,7 +258,7 @@ bool cc1120_test_fifo_read_write() {
         // When the size of the RXFIFO is 0, the first byte must be ignored. See section 3.2.3 of datasheet.
         uint8_t ignore;
         w_data = 0x0EU;
-        if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_RXLAST, &rxLastPos, 1);
+        if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_RXLAST, &rxLastPos, 1) ||
                 !cc1120_write_fifo_direct(CC1120_FIFO_RX_START, &w_data, 1) ||
                 !cc1120_read_fifo(&ignore, 1) ||
                 !cc1120_read_fifo(&r_data, 1)) {
