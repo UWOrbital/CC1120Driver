@@ -1,4 +1,6 @@
 #include "cc1120_mcu.h"
+#include "cc1120_arduino.h"
+#include <stdio.h>
 
 cc1120_mcu_t CC1120_MCU = CC1120_MCU_ARDUINO;
 

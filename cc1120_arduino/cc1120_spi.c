@@ -116,7 +116,7 @@ bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     if (status) {
         uint8_t header = (len > 1) ? BURST_BIT | addr : addr;
 
-        arduino_cc1120_cs_assert();
+        mcu_cc1120_cs_assert();
         if (!cc1120_send_byte_receive_status(header)) {
             status = false;
         }

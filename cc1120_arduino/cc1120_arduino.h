@@ -2,15 +2,13 @@
 #define CC1120_ARDUINO_H
 
 #include "cc1120_logging.h"
-#include <stdarg.h>
-#include <SPI.h>
-#include "Arduino.h"
+#include <stdint.h>
 
-const uint8_t CC1120_RST = 9;
-const uint8_t CC1120_CS = 10;
-const uint8_t CC1120_MOSI = 11;
-const uint8_t CC1120_MISO = 12;
-const uint8_t CC1120_SCLK = 13;
+extern const uint8_t CC1120_RST;
+extern const uint8_t CC1120_CS;
+extern const uint8_t CC1120_MOSI;
+extern const uint8_t CC1120_MISO;
+extern const uint8_t CC1120_SCLK;
 
 /**
  * @brief Set up the SPI pins and the CS pin, run E2E tests.
@@ -23,6 +21,10 @@ void setup();
  * 
  */
 void loop();
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Logs a string to the serial port.
@@ -51,5 +53,9 @@ void arduino_cc1120_cs_assert();
  * 
  */
 void arduino_cc1120_cs_deassert();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CC1120_ARDUINO_H */

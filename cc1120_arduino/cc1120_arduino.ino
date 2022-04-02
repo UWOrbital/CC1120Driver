@@ -1,8 +1,18 @@
 #include "cc1120_arduino.h"
+
+extern "C" {
 #include "cc1120_spi.h"
 #include "cc1120_spi_tests.h"
+}
+
 #include "cc1120_regs.h"
-#include <stdio.h>
+#include <SPI.h>
+
+const uint8_t CC1120_RST = 9;
+const uint8_t CC1120_CS = 10;
+const uint8_t CC1120_MOSI = 11;
+const uint8_t CC1120_MISO = 12;
+const uint8_t CC1120_SCLK = 13;
 
 /**
  * @brief Set up the SPI pins and the CS pin, run E2E tests.

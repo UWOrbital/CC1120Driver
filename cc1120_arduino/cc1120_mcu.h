@@ -1,9 +1,9 @@
 #ifndef CC1120_MCU_H
 #define CC1120_MCU_H
 
-#include "cc1120_arduino.h"
 #include "cc1120_logging.h"
 #include <stdarg.h>
+#include <stdint.h>
 
 typedef enum {
     CC1120_MCU_UNKNOWN = 0,

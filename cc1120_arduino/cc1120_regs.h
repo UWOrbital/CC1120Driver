@@ -65,7 +65,7 @@
 #define CC1120_STROBE_SPWD              0x39U
 #define CC1120_STROBE_SFRX              0x3AU
 #define CC1120_STROBE_SFTX              0x3BU
-#define CC1120_STROBE_SWOR              0x3CU
+#define CC1120_STROBE_SWORRST           0x3CU
 #define CC1120_STROBE_SNOP              0x3DU
 
 // FIFO access registers

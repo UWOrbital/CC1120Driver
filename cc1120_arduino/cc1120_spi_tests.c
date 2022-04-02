@@ -2,6 +2,7 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_mcu.h"
+#include <string.h>
 
 static uint8_t REGS_DEFAULTS[CC1120_REGS_EXT_ADDR];
 union cc_st ccstatus;
