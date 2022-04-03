@@ -4,62 +4,7 @@
 #include "cc1120_mcu.h"
 #include <string.h>
 
-static uint8_t REGS_DEFAULTS[CC1120_REGS_EXT_ADDR];
 union cc_st ccstatus;
-
-/**
- * @brief Set the default values for CC1120 registers.
- * 
- */
-void set_regs_defaults() {
-    REGS_DEFAULTS[CC1120_REGS_IOCFG3] = 0x06U;
-    REGS_DEFAULTS[CC1120_REGS_IOCFG2] = 0x07U;
-    REGS_DEFAULTS[CC1120_REGS_IOCFG1] = 0x30U;
-    REGS_DEFAULTS[CC1120_REGS_IOCFG0] = 0x3CU;
-    REGS_DEFAULTS[CC1120_REGS_SYNC3] = 0x93U;
-    REGS_DEFAULTS[CC1120_REGS_SYNC2] = 0x0BU;
-    REGS_DEFAULTS[CC1120_REGS_SYNC1] = 0x51U;
-    REGS_DEFAULTS[CC1120_REGS_SYNC0] = 0xDEU;
-    REGS_DEFAULTS[CC1120_REGS_SYNC_CFG1] = 0x0AU;
-    REGS_DEFAULTS[CC1120_REGS_SYNC_CFG0] = 0x17U;
-    REGS_DEFAULTS[CC1120_REGS_DEVIATION_M] = 0x06U;
-    REGS_DEFAULTS[CC1120_REGS_MODCFG_DEV_E] = 0x03U;
-    REGS_DEFAULTS[CC1120_REGS_DCFILT_CFG] = 0x4CU;
-    REGS_DEFAULTS[CC1120_REGS_PREAMBLE_CFG1] = 0x14U;
-    REGS_DEFAULTS[CC1120_REGS_PREAMBLE_CFG0] = 0x2AU;
-    REGS_DEFAULTS[CC1120_REGS_FREQ_IF_CFG] = 0x40U;
-    REGS_DEFAULTS[CC1120_REGS_IQIC] = 0xC4U;
-    REGS_DEFAULTS[CC1120_REGS_CHAN_BW] = 0x14U;
-    REGS_DEFAULTS[CC1120_REGS_MDMCFG1] = 0x46U;
-    REGS_DEFAULTS[CC1120_REGS_MDMCFG0] = 0x0DU;
-    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE2] = 0x43U;
-    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE1] = 0xA9U;
-    REGS_DEFAULTS[CC1120_REGS_SYMBOL_RATE0] = 0x2AU;
-    REGS_DEFAULTS[CC1120_REGS_AGC_REF] = 0x36U;
-    REGS_DEFAULTS[CC1120_REGS_AGC_CS_THR] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_AGC_GAIN_ADJUST] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_AGC_CFG3] = 0x91U;
-    REGS_DEFAULTS[CC1120_REGS_AGC_CFG2] = 0x20U;
-    REGS_DEFAULTS[CC1120_REGS_AGC_CFG1] = 0xAAU;
-    REGS_DEFAULTS[CC1120_REGS_AGC_CFG0] = 0xC3U;
-    REGS_DEFAULTS[CC1120_REGS_FIFO_CFG] = 0x80U;
-    REGS_DEFAULTS[CC1120_REGS_DEV_ADDR] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_SETTLING_CFG] = 0x0BU;
-    REGS_DEFAULTS[CC1120_REGS_FS_CFG] = 0x02U;
-    REGS_DEFAULTS[CC1120_REGS_WOR_CFG1] = 0x08U;
-    REGS_DEFAULTS[CC1120_REGS_WOR_CFG0] = 0x21U;
-    REGS_DEFAULTS[CC1120_REGS_WOR_EVENT0_MSB] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_WOR_EVENT0_LSB] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_PKT_CFG2] = 0x04U;
-    REGS_DEFAULTS[CC1120_REGS_PKT_CFG1] = 0x05U;
-    REGS_DEFAULTS[CC1120_REGS_PKT_CFG0] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_RFEND_CFG1] = 0x0FU;
-    REGS_DEFAULTS[CC1120_REGS_RFEND_CFG0] = 0x00U;
-    REGS_DEFAULTS[CC1120_REGS_PA_CFG2] = 0x7FU;
-    REGS_DEFAULTS[CC1120_REGS_PA_CFG1] = 0x56U;
-    REGS_DEFAULTS[CC1120_REGS_PA_CFG0] = 0x7CU;
-    REGS_DEFAULTS[CC1120_REGS_PKT_LEN] = 0x03U;
-}
 
 /**
  * @brief E2E test for SPI read function.
@@ -74,31 +19,14 @@ void set_regs_defaults() {
  */
 bool cc1120_test_spi_read() {
     bool status = true;
-    set_regs_defaults();
     uint8_t addr = 0x00U;
     uint8_t data;
-    
-    while (addr < CC1120_REGS_EXT_ADDR) {
-        if (!cc1120_read_spi(addr, &data, 1)) {
-            status = false;
-            break;
-        }
-        
-        if (data != REGS_DEFAULTS[addr]) {
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 read test failed.\n");
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "%x read %x, expected %x\n", addr, data, REGS_DEFAULTS[addr]);
-            status = false;
-            break;
-        } else {
-            addr++;
-        }
-    }
 
     if (status) {
         addr = 0x00U;
         uint8_t burstData[CC1120_REGS_EXT_ADDR];
         if (!cc1120_read_spi(addr, burstData, CC1120_REGS_EXT_ADDR) ||
-            memcmp(REGS_DEFAULTS, burstData, CC1120_REGS_EXT_ADDR) != 0) {
+            memcmp(CC1120_REGS_DEFAULTS, burstData, CC1120_REGS_EXT_ADDR) != 0) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 burst read test failed.\n");
             status = false;
         }
@@ -110,7 +38,7 @@ bool cc1120_test_spi_read() {
             status = false;
         } else if (data != 0x41U) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 read test failed.\n");
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "MARCSTATE read %x, expected %x\n", data, 0x41U);
+            mcu_log(CC1120_LOG_LEVEL_ERROR, "MARCSTATE read 0x%02X, expected 0x%02X\n", data, 0x41U);
             status = false;
         }
     }
@@ -151,7 +79,7 @@ bool cc1120_test_spi_write() {
         status = false;
     } else if (r_data != 0xFFU) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 SPI write test failed\n");
-        mcu_log(CC1120_LOG_LEVEL_ERROR, "FREQOFF0 read %x, expected %x\n", r_data, 0xFFU);
+        mcu_log(CC1120_LOG_LEVEL_ERROR, "FREQOFF0 read 0x%02X, expected 0x%02X\n", r_data, 0xFFU);
         status = false;
     }
 
@@ -173,7 +101,7 @@ bool cc1120_test_spi_write() {
             status = false;
         } else if (r_data != 0x80U) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 SPI write test failed.\n");
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "FREQ1 read %x, expected %x\n", r_data, 0x80U);
+            mcu_log(CC1120_LOG_LEVEL_ERROR, "FREQ1 read 0x%02X, expected 0x%02X\n", r_data, 0x80U);
             status = false;
         }
     }
@@ -210,7 +138,7 @@ bool cc1120_test_spi_strobe() {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 SPI strobe test failed.\n");
     } else if (data != 0x41U) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 SPI strobe test failed.\n");
-        mcu_log(CC1120_LOG_LEVEL_ERROR, "MARCSTATE read %x, expected %x\n", data, 0x41U);
+        mcu_log(CC1120_LOG_LEVEL_ERROR, "MARCSTATE read 0x%02X, expected 0x%02X\n", data, 0x41U);
         status = false;
     }
     
@@ -237,7 +165,7 @@ bool cc1120_test_fifo_read_write() {
         status = false;
     } else if (r_data != 0x0AU) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
-        mcu_log(CC1120_LOG_LEVEL_ERROR, "FIFO_TX_START read %x, expected %x\n", r_data, 0x0AU);
+        mcu_log(CC1120_LOG_LEVEL_ERROR, "FIFO_TX_START read 0x%02X, expected 0x%02X\n", r_data, 0x0AU);
         status = false;
     }
 
@@ -256,7 +184,7 @@ bool cc1120_test_fifo_read_write() {
 
     if (status) {
         uint8_t rxLastPos = 5;
-        // When the size of the RXFIFO is 0, the first byte must be ignored. See section 3.2.3 of datasheet.
+        /* When the size of the RXFIFO is 0, the first byte must be ignored. See section 3.2.3 of datasheet. */
         uint8_t ignore;
         w_data = 0x0EU;
         if (!cc1120_write_ext_addr_spi(CC1120_REGS_EXT_RXLAST, &rxLastPos, 1) ||
@@ -267,7 +195,7 @@ bool cc1120_test_fifo_read_write() {
             status = false;
         } else if (r_data != 0x0EU) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "FIFO_RX_START read %x, expected %x\n", r_data, 0x0EU);
+            mcu_log(CC1120_LOG_LEVEL_ERROR, "FIFO_RX_START read 0x%02X, expected 0x%02X\n", r_data, 0x0EU);
             status = false;
         }
     }

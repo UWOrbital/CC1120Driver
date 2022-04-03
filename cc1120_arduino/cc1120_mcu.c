@@ -1,6 +1,7 @@
 #include "cc1120_mcu.h"
 #include "cc1120_arduino.h"
 #include <stdio.h>
+#define MAX_LOG_SIZE 500U
 
 cc1120_mcu_t CC1120_MCU = CC1120_MCU_ARDUINO;
 
@@ -15,8 +16,8 @@ void mcu_log(cc1120_log_level_t level, char str[], ...) {
     va_list args;
     va_start(args, str);
 
-    char buf[500];
-    vsnprintf(buf, 500, str, args);
+    char buf[MAX_LOG_SIZE];
+    vsnprintf(buf, MAX_LOG_SIZE, str, args);
 
     if (level <= CC1120_SERIAL_LOG_LEVEL)
         mcu_serial_log(level, buf);

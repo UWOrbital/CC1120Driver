@@ -390,7 +390,7 @@ bool cc1120_send_byte_receive_status(uint8_t data) {
     for (i = 1; i <= 5; i++) {
         ccstatus.data = mcu_cc1120_spi_transfer(data);
         if (ccstatus.ccst.chip_ready == 1) {
-            mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 chip not ready. Retrying... (%u/5)\n", i);
+            mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_send_byte_receive_status: CC1120 chip not ready. Retrying... (%u/5)\n", i);
         } else {
             status = true;
             break;
