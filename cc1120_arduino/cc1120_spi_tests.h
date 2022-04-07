@@ -4,12 +4,6 @@
 #include <stdbool.h>
 
 /**
- * @brief Set the default values for CC1120 registers.
- * 
- */
-void set_regs_defaults();
-
-/**
  * @brief E2E test for SPI read function.
  * Reads through all registers up to the extended register space,
  * and compares values to default values.
