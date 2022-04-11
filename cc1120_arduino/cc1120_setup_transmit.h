@@ -184,4 +184,13 @@ bool set_vco_freq(uint32_t frequency);
  */
 bool set_rf_freq(uint32_t frequency);
 
+/**
+ * @brief Set the TX output power
+ * 
+ * @param power - The power to set to, in dBm, ranging from -16 to 14.5 dBm.
+ * @return true - If the operation was successful
+ * @return false - If the operation was not successful.
+ */
+bool set_tx_power(int8_t power);
+
 #endif /* SETUP_TRANSMIT_CC1120_H */

@@ -385,3 +385,26 @@ bool set_rf_freq(uint32_t frequency)
 
     return set_vco_freq(frequency * LODivider);
 }
+
+/**
+ * @brief Set the TX output power
+ * 
+ * @param power - The power to set to, in dBm, ranging from -16 to 14.5 dBm.
+ * @return true - If the operation was successful
+ * @return false - If the operation was not successful.
+ */
+bool set_tx_power(int8_t power)
+{
+    bool succeeded = true;
+
+    if (power < -16 || power > 14)
+    {
+        succeeded = false;
+    }
+
+    if (succeeded)
+    {
+        uint8_t data = (power+18)*2-1;
+        succeeded = cc1120_write_spi(CC1120_REGS_PA_CFG2, &data, 1);
+    }
+}
