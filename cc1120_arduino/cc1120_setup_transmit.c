@@ -11,7 +11,7 @@
  *
  * @return true - If the operation was successful
  */
-bool setGSFK()
+bool set_gfsk()
 {
     // 7:6 MODEM_MODE: 00 (Normal mode)
     // 5:3 MOD_FORMAT: 001 (2-GFSK)
@@ -27,7 +27,7 @@ bool setGSFK()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setSymbolRate(uint32_t symbolRate)
+bool set_symbol_rate(uint32_t symbolRate)
 {
     uint8_t STRATE_E = 0;
     uint32_t STRATE_M = (pow(2, 38) * ((double)symbolRate / 1000)) / FXOSC;
@@ -57,7 +57,7 @@ bool setSymbolRate(uint32_t symbolRate)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configureTransition(char mode[], char state[])
+bool configure_transition(char mode[], char state[])
 {
     uint8_t registerUsed;
     if (!strcmp("TX", state))
@@ -112,7 +112,7 @@ bool configureTransition(char mode[], char state[])
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool flushRX()
+bool flush_rx()
 {
     return cc1120_strobe_spi(CC1120_STROBE_SFRX);
 }
@@ -123,7 +123,7 @@ bool flushRX()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool flushTX()
+bool flush_tx()
 {
     return cc1120_strobe_spi(CC1120_STROBE_SFTX);
 }
@@ -143,7 +143,7 @@ bool flushTX()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFBandAndLODivider(uint8_t setting)
+bool set_rf_band_and_lo_divider(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_FS_CFG, &readData, 1))
@@ -160,7 +160,7 @@ bool setRFBandAndLODivider(uint8_t setting)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSTXStrobe()
+bool send_stx_strobe()
 {
     return cc1120_strobe_spi(CC1120_STROBE_STX);
 }
@@ -171,7 +171,7 @@ bool sendSTXStrobe()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSRXStrobe()
+bool send_srx_strobe()
 {
     return cc1120_strobe_spi(CC1120_STROBE_SRX);
 }
@@ -182,7 +182,7 @@ bool sendSRXStrobe()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSPWDStrobe()
+bool send_spwd_strobe()
 {
     return cc1120_strobe_spi(CC1120_STROBE_SPWD);
 }
@@ -193,7 +193,7 @@ bool sendSPWDStrobe()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSWORStrobe()
+bool send_swor_strobe()
 {
     return cc1120_strobe_spi(CC1120_STROBE_SWOR);
 }
@@ -212,7 +212,7 @@ bool sendSWORStrobe()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setCheckSumConfig(uint8_t setting)
+bool set_checksum_config(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG1, &readData, 1))
@@ -236,7 +236,7 @@ bool setCheckSumConfig(uint8_t setting)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setAddressCheckConfig(uint8_t setting)
+bool set_address_check_config(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG1, &readData, 1))
@@ -262,7 +262,7 @@ bool setAddressCheckConfig(uint8_t setting)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configLengthField(uint8_t setting, uint8_t numberOfBits)
+bool config_length_field(uint8_t setting, uint8_t numberOfBits)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG0, &readData, 1))
@@ -283,7 +283,7 @@ bool configLengthField(uint8_t setting, uint8_t numberOfBits)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configSync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord)
+bool config_sync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_SYNC_CFG0, &readData, 1))
@@ -318,7 +318,7 @@ bool configSync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configPreamble(uint8_t preambleWord, uint8_t numPreamble)
+bool config_preamble(uint8_t preambleWord, uint8_t numPreamble)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PREAMBLE_CFG1, &readData, 1))
@@ -336,7 +336,7 @@ bool configPreamble(uint8_t preambleWord, uint8_t numPreamble)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setVCOFrequency(uint32_t frequency)
+bool set_vco_freq(uint32_t frequency)
 {
     uint32_t FREQ = (pow(2, 16) * frequency) / FXOSC;
 
@@ -364,7 +364,7 @@ bool setVCOFrequency(uint32_t frequency)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFFrequency(uint32_t frequency)
+bool set_rf_freq(uint32_t frequency)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_FS_CFG, &readData, 1))
@@ -383,5 +383,5 @@ bool setRFFrequency(uint32_t frequency)
         LODivider = 2 * bandSelectSetting;
     }
 
-    return setVCOFrequency(frequency * LODivider);
+    return set_vco_freq(frequency * LODivider);
 }

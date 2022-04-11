@@ -9,7 +9,7 @@
  *
  * @return true - If the operation was successful
  */
-bool setGSFK();
+bool set_gfsk();
 
 /**
  * @brief Sets symbol rate.
@@ -18,7 +18,7 @@ bool setGSFK();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setSymbolRate(uint32_t symbolRate);
+bool set_symbol_rate(uint32_t symbolRate);
 
 /**
  * @brief Sets default state to transition to after receiving/transmitting a good packet.
@@ -28,7 +28,7 @@ bool setSymbolRate(uint32_t symbolRate);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configureTransition(char mode[], char state[]);
+bool configure_transition(char mode[], char state[]);
 
 /**
  * @brief Flushes the RX FIFO. Only issue in IDLE or RX_FIFO_ERR states.
@@ -36,7 +36,7 @@ bool configureTransition(char mode[], char state[]);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool flushRX();
+bool flush_rx();
 
 /**
  * @brief Flushes the TX FIFO. Only issue in IDLE or TX_FIFO_ERR states.
@@ -44,7 +44,7 @@ bool flushRX();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool flushTX();
+bool flush_tx();
 
 /**
  * @brief Sets band select setting for LO divider.
@@ -61,7 +61,7 @@ bool flushTX();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFBandAndLODivider(uint8_t setting);
+bool set_rf_band_and_lo_divider(uint8_t setting);
 
 /**
  * @brief Sends STX command strobe.
@@ -69,7 +69,7 @@ bool setRFBandAndLODivider(uint8_t setting);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSTXStrobe();
+bool send_stx_strobe();
 
 /**
  * @brief Sends SRX command strobe.
@@ -77,7 +77,7 @@ bool sendSTXStrobe();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSRXStrobe();
+bool send_srx_strobe();
 
 /**
  * @brief Sends SPWD command strobe.
@@ -85,7 +85,7 @@ bool sendSRXStrobe();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSPWDStrobe();
+bool send_spwd_strobe();
 
 /**
  * @brief Sends SWOR command strobe.
@@ -93,7 +93,7 @@ bool sendSPWDStrobe();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool sendSWORStrobe();
+bool send_swor_strobe();
 
 /**
  * @brief Sets check sum configuration.
@@ -109,7 +109,7 @@ bool sendSWORStrobe();
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setCheckSumConfig(uint8_t setting);
+bool set_checksum_config(uint8_t setting);
 
 /**
  * @brief Sets address check configuration.
@@ -124,7 +124,7 @@ bool setCheckSumConfig(uint8_t setting);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setAddressCheckConfig(uint8_t setting);
+bool set_address_check_config(uint8_t setting);
 
 /**
  * @brief Sets length field configuration.
@@ -141,7 +141,7 @@ bool setAddressCheckConfig(uint8_t setting);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configLengthField(uint8_t setting, uint8_t numberOfBits);
+bool config_length_field(uint8_t setting, uint8_t numberOfBits);
 
 /**
  * @brief Sets sync word configuration.
@@ -153,7 +153,7 @@ bool configLengthField(uint8_t setting, uint8_t numberOfBits);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configSync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord);
+bool config_sync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord);
 
 /**
  * @brief Sets preamble configuration.
@@ -164,7 +164,7 @@ bool configSync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configPreamble(uint8_t preambleWord, uint8_t numPreamble);
+bool config_preamble(uint8_t preambleWord, uint8_t numPreamble);
 
 /**
  * @brief Sets VCO frequency.
@@ -173,7 +173,7 @@ bool configPreamble(uint8_t preambleWord, uint8_t numPreamble);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setVCOFrequency(uint32_t frequency);
+bool set_vco_freq(uint32_t frequency);
 
 /**
  * @brief Sets RF frequency.
@@ -182,6 +182,6 @@ bool setVCOFrequency(uint32_t frequency);
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFFrequency(uint32_t frequency);
+bool set_rf_freq(uint32_t frequency);
 
 #endif /* SETUP_TRANSMIT_CC1120_H */
