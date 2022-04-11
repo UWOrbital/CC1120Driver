@@ -9,6 +9,7 @@
 /**
  * @brief Sets modulation format to 2-GFSK.
  *
+ * @return true - If the operation was successful
  */
 bool setGSFK()
 {
