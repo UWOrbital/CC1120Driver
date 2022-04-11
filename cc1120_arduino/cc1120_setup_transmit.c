@@ -10,13 +10,13 @@
  * @brief Sets modulation format to 2-GFSK.
  *
  */
-void setGSFK()
+bool setGSFK()
 {
     // 7:6 MODEM_MODE: 00 (Normal mode)
     // 5:3 MOD_FORMAT: 001 (2-GFSK)
     // 2:0 DEV_E: 011
     uint8_t data = 0b00001011;
-    cc1120_write_spi(CC1120_REGS_MODCFG_DEV_E, &data, 1);
+    return cc1120_write_spi(CC1120_REGS_MODCFG_DEV_E, &data, 1);
 }
 
 /**
@@ -26,10 +26,10 @@ void setGSFK()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setSymbolRate(int symbolRate)
+bool setSymbolRate(uint32_t symbolRate)
 {
-    int STRATE_E = 0;
-    long int STRATE_M = (pow(2, 38) * ((double)symbolRate / 1000)) / FXOSC;
+    uint8_t STRATE_E = 0;
+    uint32_t STRATE_M = (pow(2, 38) * ((double)symbolRate / 1000)) / FXOSC;
 
     if (STRATE_M > pow(2, 20) - 1)
     {
@@ -37,9 +37,9 @@ bool setSymbolRate(int symbolRate)
         return false;
     }
 
-    uint8_t data1 = STRATE_M << 4 || NtoKBits(STRATE_M, 16, 19);
-    uint8_t data2 = NtoKBits(STRATE_M, 8, 15);
-    uint8_t data3 = NtoKBits(STRATE_M, 0, 7);
+    uint8_t data1 = STRATE_M << 4 || extract_bits(STRATE_M, 16, 19);
+    uint8_t data2 = extract_bits(STRATE_M, 8, 15);
+    uint8_t data3 = extract_bits(STRATE_M, 0, 7);
 
     bool succeeded = true;
     succeeded = succeeded && cc1120_write_spi(CC1120_REGS_SYMBOL_RATE2, &data1, 1);
@@ -58,7 +58,7 @@ bool setSymbolRate(int symbolRate)
  */
 bool configureTransition(char mode[], char state[])
 {
-    int registerUsed;
+    uint8_t registerUsed;
     if (!strcmp("TX", state))
     {
         registerUsed = CC1120_REGS_RFEND_CFG0;
@@ -73,7 +73,7 @@ bool configureTransition(char mode[], char state[])
         return false;
     }
 
-    int code;
+    uint8_t code;
     if (!strcmp("IDLE", mode))
     {
         code = 0;
@@ -142,7 +142,7 @@ bool flushTX()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFBandAndLODivider(int setting)
+bool setRFBandAndLODivider(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_FS_CFG, &readData, 1))
@@ -211,7 +211,7 @@ bool sendSWORStrobe()
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setCheckSumConfig(int setting)
+bool setCheckSumConfig(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG1, &readData, 1))
@@ -235,7 +235,7 @@ bool setCheckSumConfig(int setting)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setAddressCheckConfig(int setting)
+bool setAddressCheckConfig(uint8_t setting)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG1, &readData, 1))
@@ -261,7 +261,7 @@ bool setAddressCheckConfig(int setting)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configLengthField(int setting, int numberOfBits)
+bool configLengthField(uint8_t setting, uint8_t numberOfBits)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PKT_CFG0, &readData, 1))
@@ -282,7 +282,7 @@ bool configLengthField(int setting, int numberOfBits)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configSync(int syncMode, int syncNumError, long int syncWord)
+bool configSync(uint8_t syncMode, uint8_t syncNumError, uint32_t syncWord)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_SYNC_CFG0, &readData, 1))
@@ -295,10 +295,10 @@ bool configSync(int syncMode, int syncNumError, long int syncWord)
         return false;
     }
 
-    uint8_t data1 = NtoKBits(syncWord, 24, 31);
-    uint8_t data2 = NtoKBits(syncWord, 16, 23);
-    uint8_t data3 = NtoKBits(syncWord, 8, 15);
-    uint8_t data4 = NtoKBits(syncWord, 0, 7);
+    uint8_t data1 = extract_bits(syncWord, 24, 31);
+    uint8_t data2 = extract_bits(syncWord, 16, 23);
+    uint8_t data3 = extract_bits(syncWord, 8, 15);
+    uint8_t data4 = extract_bits(syncWord, 0, 7);
 
     bool succeeded = true;
     succeeded = succeeded && cc1120_write_spi(CC1120_REGS_SYNC3, &data1, 1);
@@ -317,7 +317,7 @@ bool configSync(int syncMode, int syncNumError, long int syncWord)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool configPreamble(int preambleWord, int numPreamble)
+bool configPreamble(uint8_t preambleWord, uint8_t numPreamble)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_PREAMBLE_CFG1, &readData, 1))
@@ -335,9 +335,9 @@ bool configPreamble(int preambleWord, int numPreamble)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setVCOFrequency(int frequency)
+bool setVCOFrequency(uint32_t frequency)
 {
-    long int FREQ = (pow(2, 16) * frequency) / FXOSC;
+    uint32_t FREQ = (pow(2, 16) * frequency) / FXOSC;
 
     if (FREQ > pow(2, 24) - 1)
     {
@@ -345,9 +345,9 @@ bool setVCOFrequency(int frequency)
         return false;
     }
 
-    uint8_t data1 = NtoKBits(FREQ, 16, 23);
-    uint8_t data2 = NtoKBits(FREQ, 8, 15);
-    uint8_t data3 = NtoKBits(FREQ, 0, 7);
+    uint8_t data1 = extract_bits(FREQ, 16, 23);
+    uint8_t data2 = extract_bits(FREQ, 8, 15);
+    uint8_t data3 = extract_bits(FREQ, 0, 7);
 
     bool succeeded = true;
     succeeded = succeeded && cc1120_write_ext_addr_spi(CC1120_REGS_EXT_FREQ2, &data1, 1);
@@ -363,15 +363,15 @@ bool setVCOFrequency(int frequency)
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
-bool setRFFrequency(int frequency)
+bool setRFFrequency(uint32_t frequency)
 {
     uint8_t readData;
     if (!cc1120_read_spi(CC1120_REGS_FS_CFG, &readData, 1))
     {
         return false;
     }
-    int bandSelectSetting = NtoKBits(readData, 0, 3);
-    int LODivider;
+    uint8_t bandSelectSetting = extract_bits(readData, 0, 3);
+    uint8_t LODivider;
 
     if (bandSelectSetting == 11)
     {
