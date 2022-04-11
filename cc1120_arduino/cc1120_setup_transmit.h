@@ -1,6 +1,8 @@
 #ifndef SETUP_TRANSMIT_CC1120_H
 #define SETUP_TRANSMIT_CC1120_H
 
+#include <stdbool.h>
+
 void setGSFK();
 bool setSymbolRate(int symbolRate);
 bool configureTransition(char mode[], char state[]);

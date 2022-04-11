@@ -4,7 +4,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include <math.h>
-#include <stdbool.h>
 
 /**
  * @brief Sets RX Filter Bandwidth.
