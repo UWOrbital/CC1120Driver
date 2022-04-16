@@ -332,7 +332,7 @@ bool config_preamble(uint8_t preambleWord, uint8_t numPreamble)
 /**
  * @brief Sets VCO frequency.
  *
- * @param frequency - The frequency to set to.
+ * @param frequency - The VCO frequency to set to.
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
@@ -360,7 +360,7 @@ bool set_vco_freq(uint32_t frequency)
 /**
  * @brief Sets RF frequency.
  *
- * @param frequency - The frequency to set to.
+ * @param frequency - The RF frequency to set to.
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
  */
@@ -388,7 +388,7 @@ bool set_rf_freq(uint32_t frequency)
 
 /**
  * @brief Set the TX output power
- * 
+ *
  * @param power - The power to set to, in dBm, ranging from -16 to 14.5 dBm.
  * @return true - If the operation was successful
  * @return false - If the operation was not successful.
@@ -404,7 +404,7 @@ bool set_tx_power(int8_t power)
 
     if (succeeded)
     {
-        uint8_t data = (power+18)*2-1;
+        uint8_t data = (power + 18) * 2 - 1;
         succeeded = cc1120_write_spi(CC1120_REGS_PA_CFG2, &data, 1);
     }
 }
