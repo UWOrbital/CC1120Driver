@@ -21,6 +21,30 @@ bool set_gfsk()
 }
 
 /**
+ * @brief Sets PA output power.
+ *
+ * @param power - The PA power ramp target level, in dBm.
+ * @return true - If the operation was successful
+ * @return false - If the operation was not successful.
+ */
+bool set_pa_output_power(uint32_t power)
+{
+    uint8_t readData;
+    if (!cc1120_read_spi(CC1120_REGS_PA_CFG2, &readData, 1))
+    {
+        return false;
+    }
+    uint8_t data = extract_bits(readData, 6, 6);
+    uint8_t PA_POWER_RAMP = 2 * power + 35;
+    if (PA_POWER_RAMP < 0x03)
+    {
+        return false;
+    }
+    data = (data << 6) || PA_POWER_RAMP;
+    return cc1120_write_spi(CC1120_REGS_MODCFG_DEV_E, &data, 1);
+}
+
+/**
  * @brief Sets symbol rate.
  *
  * @param symbolRate - The symbol rate to set to, in symbols per second.
