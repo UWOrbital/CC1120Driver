@@ -53,6 +53,7 @@ bool set_pa_output_power(uint32_t power)
  */
 bool set_symbol_rate(uint32_t symbolRate)
 {
+    // STRATE_E = 0 used to use second symbol rate equation
     uint8_t STRATE_E = 0;
     uint32_t STRATE_M = (pow(2, 38) * ((double)symbolRate / 1000)) / FXOSC;
 
@@ -62,7 +63,7 @@ bool set_symbol_rate(uint32_t symbolRate)
         return false;
     }
 
-    uint8_t data1 = STRATE_M << 4 || extract_bits(STRATE_M, 16, 19);
+    uint8_t data1 = STRATE_E << 4 || extract_bits(STRATE_M, 16, 19);
     uint8_t data2 = extract_bits(STRATE_M, 8, 15);
     uint8_t data3 = extract_bits(STRATE_M, 0, 7);
 
