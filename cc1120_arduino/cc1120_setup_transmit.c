@@ -407,4 +407,6 @@ bool set_tx_power(int8_t power)
         uint8_t data = (power+18)*2-1;
         succeeded = cc1120_write_spi(CC1120_REGS_PA_CFG2, &data, 1);
     }
+
+    return succeeded;
 }

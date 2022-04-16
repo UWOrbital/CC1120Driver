@@ -3,6 +3,7 @@
 extern "C" {
 #include "cc1120_spi.h"
 #include "cc1120_spi_tests.h"
+#include "cc1120_setup_transmit.h"
 }
 
 #include "cc1120_regs.h"
@@ -31,14 +32,14 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting E2E tests...");
-    bool status = true;
+    bool state = true;
     uint8_t i;
     for(i = 0; i < 3; i++) {
-        status &= cc1120_test_spi_strobe();
-        status &= cc1120_test_spi_read();
-        status &= cc1120_test_spi_write();
-        status &= cc1120_test_fifo_read_write();
-        if (status) {
+        state &= cc1120_test_spi_strobe();
+        state &= cc1120_test_spi_read();
+        state &= cc1120_test_spi_write();
+        state &= cc1120_test_fifo_read_write();
+        if (state) {
             Serial.println("All CC1120 tests passed. Resetting the chip...");
             break;
         } else {
@@ -54,6 +55,20 @@ void setup() {
 
     if (!cc1120_strobe_spi(CC1120_STROBE_SRES)) {
         Serial.println("ERROR. CC1120 reset failed.");
+    }
+    
+    if (state) {
+        state &= set_rf_freq(433920000);
+        state &= set_gfsk();
+        state &= set_tx_power(0);
+        state &= set_symbol_rate(9600);
+        //state &= send_stx_strobe();
+    }
+
+    if (!state) {
+        Serial.println("ERROR. CC1120 setup failed.");
+    } else {
+        Serial.println("CC1120 setup complete.");
     }
 }
 
