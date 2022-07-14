@@ -31,18 +31,27 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting E2E tests...");
-    bool status = true;
+    cc1120_error_code status;
     uint8_t i;
     for(i = 0; i < 3; i++) {
-        status &= cc1120_test_spi_strobe();
-        status &= cc1120_test_spi_read();
-        status &= cc1120_test_spi_write();
-        status &= cc1120_test_fifo_read_write();
-        if (status) {
+        status = cc1120_test_spi_strobe();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_spi_read();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_spi_write();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_fifo_read_write();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS) {
             Serial.println("All CC1120 tests passed. Resetting the chip...");
             break;
-        } else {
-            Serial.print("CC1120 tests failed. Trying again... (");
+        } 
+        
+        else {
+            Serial.print("CC1120 tests failed. Error Code: %i Trying again... (", status);
             Serial.print(i+1);
             Serial.println("/3)");
 
