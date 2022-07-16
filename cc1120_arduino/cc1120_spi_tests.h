@@ -2,6 +2,7 @@
 #define CC1120_SPI_TESTS_H
 
 #include <stdbool.h>
+#include "cc1120_spi.h"
 
 /**
  * @brief E2E test for SPI read function.

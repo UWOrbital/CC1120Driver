@@ -1,5 +1,4 @@
 #include "cc1120_spi_tests.h"
-#include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_mcu.h"
 #include <string.h>
@@ -353,6 +352,7 @@ cc1120_error_code cc1120_test_fifo_read_write() {
             status = CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_BURST_DIRECT_WRITE_FAILED;
             return status;
         }
+    }
 
     if (status == CC1120_ERROR_CODE_SUCCESS)
         mcu_log(CC1120_LOG_LEVEL_INFO, "CC1120 FIFO test passed.\n");

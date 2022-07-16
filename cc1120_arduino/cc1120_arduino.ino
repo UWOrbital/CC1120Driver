@@ -48,10 +48,11 @@ void setup() {
         if (status == CC1120_ERROR_CODE_SUCCESS) {
             Serial.println("All CC1120 tests passed. Resetting the chip...");
             break;
-        } 
-        
-        else {
-            Serial.print("CC1120 tests failed. Error Code: %i Trying again... (", status);
+        } else {
+            Serial.print("CC1120 tests failed. ");
+            Serial.print("Error Code: ");
+            Serial.println(status);
+            Serial.print("Trying again... (");
             Serial.print(i+1);
             Serial.println("/3)");
 
