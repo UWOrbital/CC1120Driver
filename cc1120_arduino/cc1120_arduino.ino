@@ -8,11 +8,11 @@ extern "C" {
 #include "cc1120_regs.h"
 #include <SPI.h>
 
-const uint8_t CC1120_RST = 9;
-const uint8_t CC1120_CS = 10;
-const uint8_t CC1120_MOSI = 11;
-const uint8_t CC1120_MISO = 12;
-const uint8_t CC1120_SCLK = 13;
+const uint8_t CC1120_RST = 49;
+const uint8_t CC1120_CS = 53;
+const uint8_t CC1120_MOSI = 51;
+const uint8_t CC1120_MISO = 50;
+const uint8_t CC1120_SCLK = 52;
 
 /**
  * @brief Set up the SPI pins and the CS pin, run E2E tests.
@@ -62,7 +62,7 @@ void setup() {
         }
     }
 
-    if (!cc1120_strobe_spi(CC1120_STROBE_SRES)) {
+    if (cc1120_strobe_spi(CC1120_STROBE_SRES) != CC1120_ERROR_CODE_SUCCESS) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
 }

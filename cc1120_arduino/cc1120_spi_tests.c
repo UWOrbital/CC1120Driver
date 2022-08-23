@@ -347,7 +347,7 @@ cc1120_error_code cc1120_test_fifo_read_write() {
             return status; 
         }
 
-        if (memcmp(burstWriteData2, burstReadData2, 3)); {
+        if (memcmp(burstWriteData2, burstReadData2, 3) != 0) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "CC1120 FIFO test failed.\n");
             status = CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_BURST_DIRECT_WRITE_FAILED;
             return status;
