@@ -18,52 +18,6 @@ union cc_st {
   uint8_t data;
 };
 
-typedef enum  {
-  CC1120_ERROR_CODE_SUCCESS = 0,
-  CC1120_ERROR_CODE_READ_SPI_INVALID_REGISTER,
-  CC1120_ERROR_CODE_READ_SPI_INVALID_LENGTH,
-  CC1120_ERROR_CODE_READ_SPI_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_REGISTER,
-  CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_LENGTH,
-  CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_FAILED,
-  CC1120_ERROR_CODE_WRITE_SPI_INVALID_REGISTER,
-  CC1120_ERROR_CODE_WRITE_SPI_INVALID_LENGTH,
-  CC1120_ERROR_CODE_WRITE_SPI_INVALID_STATUS_BYTE_HEADER,
-  CC1120_ERROR_CODE_WRITE_SPI_INVALID_STATUS_BYTE_DATA,
-  CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_REGISTER,
-  CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_LENGTH,
-  CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_STATUS_BYTE_HEADER,
-  CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_FAILED,
-  CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_STATUS_BYTE_DATA,
-  CC1120_ERROR_CODE_STROBE_SPI_INVALID_REGISTER,
-  CC1120_ERROR_CODE_STROBE_SPI_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_READ_FIFO_INVALID_LENGTH,
-  CC1120_ERROR_CODE_READ_FIFO_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_WRITE_FIFO_INVALID_LENGTH,
-  CC1120_ERROR_CODE_WRITE_FIFO_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_REGISTER,
-  CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_LENGTH,
-  CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_RGISTER,
-  CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_LENGTH,
-  CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE,
-  CC1120_ERROR_CODE_TEST_SPI_READ_INCORRECT_BURST_READ,
-  CC1120_ERROR_CODE_TEST_SPI_READ_INCORRECT_SINGLE_EXT_ADDR_READ,
-  CC1120_ERROR_CODE_TEST_SPI_READ_INCORRECT_BURST_EXT_ADDR_READ,
-  CC1120_ERROR_CODE_TEST_SPI_WRITE_INCORRECT_SINGLE_ADDR_WRITE,
-  CC1120_ERROR_CODE_TEST_SPI_WRITE_INCORRECT_BURST_ADDR_WRITE,
-  CC1120_ERROR_CODE_TEST_SPI_WRITE_INCORRECT_SINGLE_EXT_ADDR_WRITE,
-  CC1120_ERROR_CODE_TEST_SPI_WRITE_INCORRECT_BURST_EXT_ADDR_WRITE,
-  CC1120_ERROR_CODE_TEST_SPI_STROBE_INCORRECT_MARCSTATE_READ,
-  CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_SINGLE_WRITE_DIRECT_READ_FAILED,
-  CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_BURST_WRITE_DIRECT_READ_FAILED,
-  CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_SINGLE_DIRECT_WRITE_FAILED,
-  CC1120_ERROR_CODE_TEST_FIFO_READ_WRITE_BURST_DIRECT_WRITE_FAILED
-  
-} cc1120_error_code;
-
 /**
  * @brief - Reads from consecutive registers from the CC1120.
  * 
@@ -73,7 +27,7 @@ typedef enum  {
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads from consecutive extended address space registers on the CC1120
@@ -84,7 +38,7 @@ cc1120_error_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes to consecutive registers on the CC1120.
@@ -95,7 +49,7 @@ cc1120_error_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes to consecutive extended address space registers on the CC1120.
@@ -106,7 +60,7 @@ cc1120_error_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief Calls a strobe command on the CC1120.
@@ -115,7 +69,7 @@ cc1120_error_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_
  * @return CC1120_ERROR_CODE_SUCCESS - If the strobe command was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_strobe_spi(uint8_t addr);
+cc1120_status_code cc1120_strobe_spi(uint8_t addr);
 
 /**
  * @brief - Reads consecutive registers from the FIFO memory.
@@ -125,7 +79,7 @@ cc1120_error_code cc1120_strobe_spi(uint8_t addr);
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the status byte is invalid.
  */
-cc1120_error_code cc1120_read_fifo(uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_read_fifo(uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes consecutive registers to the FIFO memory.
@@ -135,7 +89,7 @@ cc1120_error_code cc1120_read_fifo(uint8_t data[], uint8_t len);
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the status byte is invalid.
  */
-cc1120_error_code cc1120_write_fifo(uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_write_fifo(uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads consecutive registers directly from the FIFO on the CC1120.
@@ -146,7 +100,7 @@ cc1120_error_code cc1120_write_fifo(uint8_t data[], uint8_t len);
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes consecutive registers directly to the FIFO on the CC1120.
@@ -157,7 +111,7 @@ cc1120_error_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t 
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_status_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads the status register on the CC1120 and consecutively sends a byte over SPI.
@@ -166,6 +120,6 @@ cc1120_error_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t
  * @return CC1120_ERROR_CODE_SUCCESS - If the status byte is valid.
  * @return CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE - If the status byte is invalid.
  */
-cc1120_error_code cc1120_send_byte_receive_status(uint8_t data);
+cc1120_status_code cc1120_send_byte_receive_status(uint8_t data);
 
 #endif /* CC1120_SPI_H */

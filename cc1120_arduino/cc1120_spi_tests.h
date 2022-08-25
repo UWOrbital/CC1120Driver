@@ -2,7 +2,7 @@
 #define CC1120_SPI_TESTS_H
 
 #include <stdbool.h>
-#include "cc1120_spi.h"
+#include "cc1120_logging.h"
 
 /**
  * @brief E2E test for SPI read function.
@@ -15,7 +15,7 @@
  * @return An error code - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_read();
+cc1120_status_code cc1120_test_spi_read();
 
 /**
  * @brief E2E test for SPI write function.
@@ -28,7 +28,7 @@ cc1120_error_code cc1120_test_spi_read();
  * @return An error code - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_write();
+cc1120_status_code cc1120_test_spi_write();
 
 /**
  * @brief E2E test for SPI strobe functionality.
@@ -37,7 +37,7 @@ cc1120_error_code cc1120_test_spi_write();
  * @return CC1120_ERROR_CODE_SUCCESS - If MARCSTATE is 0x41 after reset.
  * @return An error code - If MARCSTATE is not 0x41 after reset, or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_strobe();
+cc1120_status_code cc1120_test_spi_strobe();
 
 /**
  * @brief - E2E test for the CC1120's FIFO read and write functionality.
@@ -47,6 +47,6 @@ cc1120_error_code cc1120_test_spi_strobe();
  * @return CC1120_ERROR_CODE_SUCCESS - If the FIFO read and write tests pass.
  * @return An error code - If the FIFO read and write tests fail.
  */
-cc1120_error_code cc1120_test_fifo_read_write();
+cc1120_status_code cc1120_test_fifo_read_write();
 
 #endif /* CC1120_SPI_TESTS_H */

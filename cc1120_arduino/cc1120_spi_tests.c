@@ -5,6 +5,56 @@
 
 union cc_st ccstatus;
 
+uint8_t CC1120_REGS_DEFAULTS[CC1120_REGS_STD_SPACE_SIZE] = {
+    CC1120_DEFAULTS_IOCFG3,
+    CC1120_DEFAULTS_IOCFG2,
+    CC1120_DEFAULTS_IOCFG1,
+    CC1120_DEFAULTS_IOCFG0,
+    CC1120_DEFAULTS_SYNC3,
+    CC1120_DEFAULTS_SYNC2,
+    CC1120_DEFAULTS_SYNC1,
+    CC1120_DEFAULTS_SYNC0,
+    CC1120_DEFAULTS_SYNC_CFG1,
+    CC1120_DEFAULTS_SYNC_CFG0,
+    CC1120_DEFAULTS_DEVIATION_M,
+    CC1120_DEFAULTS_MODCFG_DEV_E,
+    CC1120_DEFAULTS_DCFILT_CFG,
+    CC1120_DEFAULTS_PREAMBLE_CFG1,
+    CC1120_DEFAULTS_PREAMBLE_CFG0,
+    CC1120_DEFAULTS_FREQ_IF_CFG,
+    CC1120_DEFAULTS_IQIC,
+    CC1120_DEFAULTS_CHAN_BW,
+    CC1120_DEFAULTS_MDMCFG1,
+    CC1120_DEFAULTS_MDMCFG0,
+    CC1120_DEFAULTS_SYMBOL_RATE2,
+    CC1120_DEFAULTS_SYMBOL_RATE1,
+    CC1120_DEFAULTS_SYMBOL_RATE0,
+    CC1120_DEFAULTS_AGC_REF,
+    CC1120_DEFAULTS_AGC_CS_THR,
+    CC1120_DEFAULTS_AGC_GAIN_ADJUST,
+    CC1120_DEFAULTS_AGC_CFG3,
+    CC1120_DEFAULTS_AGC_CFG2,
+    CC1120_DEFAULTS_AGC_CFG1,
+    CC1120_DEFAULTS_AGC_CFG0,
+    CC1120_DEFAULTS_FIFO_CFG,
+    CC1120_DEFAULTS_DEV_ADDR,
+    CC1120_DEFAULTS_SETTLING_CFG,
+    CC1120_DEFAULTS_FS_CFG,
+    CC1120_DEFAULTS_WOR_CFG1,
+    CC1120_DEFAULTS_WOR_CFG0,
+    CC1120_DEFAULTS_WOR_EVENT0_MSB,
+    CC1120_DEFAULTS_WOR_EVENT0_LSB,
+    CC1120_DEFAULTS_PKT_CFG2,
+    CC1120_DEFAULTS_PKT_CFG1,
+    CC1120_DEFAULTS_PKT_CFG0,
+    CC1120_DEFAULTS_RFEND_CFG1,
+    CC1120_DEFAULTS_RFEND_CFG0,
+    CC1120_DEFAULTS_PA_CFG2,
+    CC1120_DEFAULTS_PA_CFG1,
+    CC1120_DEFAULTS_PA_CFG0,
+    CC1120_DEFAULTS_PKT_LEN
+};
+
 /**
  * @brief E2E test for SPI read function.
  * Reads through all registers up to the extended register space,
@@ -16,8 +66,8 @@ union cc_st ccstatus;
  * @return An error code - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_read() { 
-    cc1120_error_code status;
+cc1120_status_code cc1120_test_spi_read() { 
+    cc1120_status_code status;
     uint8_t addr = 0x00U;
     uint8_t data;
     uint8_t burstData[CC1120_REGS_EXT_ADDR];
@@ -84,8 +134,8 @@ cc1120_error_code cc1120_test_spi_read() {
  * @return An error code - If any register does not have the expected value,
  *                 or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_write() {
-    cc1120_error_code status;
+cc1120_status_code cc1120_test_spi_write() {
+    cc1120_status_code status;
     uint8_t w_data = 0xFFU;
     uint8_t r_data;
 
@@ -198,8 +248,8 @@ cc1120_error_code cc1120_test_spi_write() {
  * @return CC1120_ERROR_CODE_SUCCESS - If MARCSTATE is 0x41 after reset.
  * @return An error code - If MARCSTATE is not 0x41 after reset, or status byte is invalid.
  */
-cc1120_error_code cc1120_test_spi_strobe() {
-    cc1120_error_code status;
+cc1120_status_code cc1120_test_spi_strobe() {
+    cc1120_status_code status;
     uint8_t data;
     
     status = cc1120_strobe_spi(CC1120_STROBE_SRES);
@@ -236,8 +286,8 @@ cc1120_error_code cc1120_test_spi_strobe() {
  * @return CC1120_ERROR_CODE_SUCCESS - If the FIFO read and write tests pass.
  * @return An error code - If the FIFO read and write tests fail.
  */
-cc1120_error_code cc1120_test_fifo_read_write() {
-    cc1120_error_code status;
+cc1120_status_code cc1120_test_fifo_read_write() {
+    cc1120_status_code status;
     uint8_t w_data = 0x0AU;
     uint8_t r_data;
 

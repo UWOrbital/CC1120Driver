@@ -5,8 +5,12 @@ extern "C" {
 #include "cc1120_spi_tests.h"
 }
 
+#include "cc1120_logging.h"
 #include "cc1120_regs.h"
 #include <SPI.h>
+
+cc1120_log_level_t CC1120_FILE_LOG_LEVEL = CC1120_LOG_LEVEL_OFF;
+cc1120_log_level_t CC1120_SERIAL_LOG_LEVEL = CC1120_LOG_LEVEL_DEBUG;
 
 const uint8_t CC1120_RST = 49;
 const uint8_t CC1120_CS = 53;
@@ -31,7 +35,7 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting E2E tests...");
-    cc1120_error_code status;
+    cc1120_status_code status;
     uint8_t i;
     for(i = 0; i < 3; i++) {
         status = cc1120_test_spi_strobe();
