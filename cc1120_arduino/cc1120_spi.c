@@ -1,7 +1,6 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_mcu.h"
-#include "cc1120_logging.h"
 
 /**
  * @brief - Reads from consecutive registers from the CC1120.

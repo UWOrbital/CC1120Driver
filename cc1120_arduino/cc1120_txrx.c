@@ -51,13 +51,35 @@ registerSetting_t txSettingsExt[] = {
 };
 
 /**
+ * @brief Gets the number of packets queued in the TX FIFO
+ * 
+ * @param numPackets - A pointer to an 8-bit integer to store the number of packets in
+ * @return cc1120_status_code - Whether or not the registe read was successful
+ */
+cc1120_status_code cc1120_get_packets_in_tx_fifo(uint8_t *numPackets) {
+    return cc1120_read_ext_addr_spi(CC1120_REGS_EXT_NUM_TXBYTES, numPackets, 1);
+}
+
+/**
+ * @brief Gets the state of the CC1120 from the MARCSTATE register
+ * 
+ * @param stateNum - A pointer to an 8-bit integer to store the state in
+ * @return cc1120_status_code - Whether or not the register read was successful
+ */
+cc1120_status_code cc1120_get_state(uint8_t *stateNum) {
+    cc1120_status_code status = cc1120_read_ext_addr_spi(CC1120_REGS_EXT_MARCSTATE, stateNum, 1);
+    *stateNum &= 0b11111;
+    return status;
+}
+
+/**
  * @brief Resets CC1120 & initializes transmit mode
  * 
  * @return cc1120_status_code - Whether or not the setup was a success
  */
 cc1120_status_code cc1120_tx_init() {
     cc1120_status_code status;
-    for (uint8_t i=0; i<sizeof(txSettingsStd)/sizeof(registerSetting_t); i++) {
+    for (uint8_t i=0; i<22; i++) {
         status = cc1120_write_spi(txSettingsStd[i].addr, &txSettingsStd[i].val, 1);
         if (status != CC1120_ERROR_CODE_SUCCESS)
             break;
@@ -66,14 +88,34 @@ cc1120_status_code cc1120_tx_init() {
     if (status != CC1120_ERROR_CODE_SUCCESS)
         return status;
 
-    for (uint8_t i=0; i<sizeof(txSettingsExt)/sizeof(registerSetting_t); i++) {
+    for (uint8_t i=0; i<19; i++) {
         cc1120_write_ext_addr_spi(txSettingsExt[i].addr, &txSettingsStd[i].val, 1);
         if (status != CC1120_ERROR_CODE_SUCCESS)
             break;
     }
+    
+    if (status != CC1120_ERROR_CODE_SUCCESS)
+        return status;
+
+    status = cc1120_strobe_spi(CC1120_STROBE_SFSTXON);
+    
+    return status;
 }
 
-cc1120_status_code cc1120_send(uint8_t *data, uint32_t len) {
-    cc1120_strobe_spi(CC1120_STROBE_STX);
-    cc1120_write_fifo(data, len);
+/**
+ * @brief Adds the given data to the CC1120 FIFO buffer and transmits
+ * 
+ * @param data - A char array of data to transmit
+ * @param len - The size of the provided array
+ * @return cc1120_status_code 
+ */
+cc1120_status_code cc1120_send(unsigned char *data, uint32_t len) {
+    cc1120_status_code status;
+    
+    status = cc1120_write_fifo(data, len);
+    if (status != CC1120_ERROR_CODE_SUCCESS)
+        return status;
+    
+    status = cc1120_strobe_spi(CC1120_STROBE_STX);
+    return status;
 }

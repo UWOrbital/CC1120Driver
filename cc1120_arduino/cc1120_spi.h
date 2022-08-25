@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "cc1120_logging.h"
+
 #define R_BIT 1 << 7
 #define BURST_BIT 1 << 6
 
