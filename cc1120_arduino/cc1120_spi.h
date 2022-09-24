@@ -117,9 +117,10 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
  * @brief - Reads the status register on the CC1120 and consecutively sends a byte over SPI.
  * 
  * @param data - The data to send to the status register.
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives.
  * @return true - If the status byte is valid.
  * @return false - If the status byte is invalid.
  */
-bool cc1120_send_byte_receive_status(uint8_t data);
+bool cc1120_send_byte_receive_status(uint8_t data, bool csHold);
 
 #endif /* CC1120_SPI_H */

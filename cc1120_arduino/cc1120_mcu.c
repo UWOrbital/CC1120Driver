@@ -1,6 +1,7 @@
 #include "cc1120_mcu.h"
 #include "cc1120_arduino.h"
 #include <stdio.h>
+#include <stdbool.h>
 #define MAX_LOG_SIZE 500U
 
 cc1120_mcu_t CC1120_MCU = CC1120_MCU_ARDUINO;
@@ -58,42 +59,17 @@ void mcu_file_log(cc1120_log_level_t level, char str[]) {
  * @brief Simultaneously sends and receives a byte over CC1120 SPI interface
  * 
  * @param data - Data to transfer 
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives
  * @return uint8_t - Data received from CC1120
  */
-uint8_t mcu_cc1120_spi_transfer(uint8_t data) {
+uint8_t mcu_cc1120_spi_transfer(uint8_t data, bool csHold) {
     uint8_t received;
     #ifdef CC1120_ARDUINO_H
-    received = arduino_cc1120_spi_transfer(data);
+    received = arduino_cc1120_spi_transfer(data, csHold);
     #endif
     #ifdef CC1120_RM46_H
     received = rm46_cc1120_spi_transfer(data);
     #endif
 
     return received;
-}
-
-/**
- * @brief Calls the correct CS assert function based on the MCU selected.
- * 
- */
-void mcu_cc1120_cs_assert() {
-    #ifdef CC1120_ARDUINO_H
-    arduino_cc1120_cs_assert();
-    #endif
-    #ifdef CC1120_RM46_H
-    rm46_cc1120_cs_assert();
-    #endif
-}
-
-/**
- * @brief Calls the correct CS deassert function based on the MCU selected.
- * 
- */
-void mcu_cc1120_cs_deassert() {
-    #ifdef CC1120_ARDUINO_H
-    arduino_cc1120_cs_deassert();
-    #endif
-    #ifdef CC1120_RM46_H
-    rm46_cc1120_cs_deassert();
-    #endif
 }

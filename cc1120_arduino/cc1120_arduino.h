@@ -3,6 +3,7 @@
 
 #include "cc1120_logging.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 extern const uint8_t CC1120_RST;
 extern const uint8_t CC1120_CS;
@@ -38,21 +39,10 @@ void arduino_serial_log(cc1120_log_level_t level, char str[]);
  * @brief Simultaneously sends and receives a byte over CC1120 SPI interface
  * 
  * @param data - Data to transfer 
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives
  * @return uint8_t - Data received from CC1120
  */
-uint8_t arduino_cc1120_spi_transfer(uint8_t data);
-
-/**
- * @brief Pulls the CS pin low.
- * 
- */
-void arduino_cc1120_cs_assert();
-
-/**
- * @brief Pulls the CS pin high.
- * 
- */
-void arduino_cc1120_cs_deassert();
+uint8_t arduino_cc1120_spi_transfer(uint8_t data, bool csHold);
 
 #ifdef __cplusplus
 }

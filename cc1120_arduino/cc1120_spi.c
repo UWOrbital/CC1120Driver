@@ -1,6 +1,7 @@
 #include "cc1120_spi.h"
 #include "cc1120_regs.h"
 #include "cc1120_mcu.h"
+#include <stdbool.h>
 
 /**
  * @brief - Reads from consecutive registers from the CC1120.
@@ -27,20 +28,22 @@ bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     if (status) {
         uint8_t header = (len > 1) ? R_BIT | BURST_BIT | addr : R_BIT | addr;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            data[i] = mcu_cc1120_spi_transfer(0x00);
+        for (i = 0; i < len - 1; i++) {
+            data[i] = mcu_cc1120_spi_transfer(0x00, true);
         }
+
+        data[len-1] = mcu_cc1120_spi_transfer(0x00, false);
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -68,26 +71,27 @@ bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
         status = false;
     }
     
-
     if (status) {
         uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_EXT_ADDR :
                                      R_BIT | CC1120_REGS_EXT_ADDR;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
-        mcu_cc1120_spi_transfer(addr);
+        mcu_cc1120_spi_transfer(addr, true); // check if all zeroes are returned here from sending the extended address
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            data[i] = mcu_cc1120_spi_transfer(0xFF);
+        for (i = 0; i < len - 1; i++) {
+            data[i] = mcu_cc1120_spi_transfer(0x00, true);
         }
+
+        data[len-1] = mcu_cc1120_spi_transfer(0x00, false);
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -116,22 +120,25 @@ bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     if (status) {
         uint8_t header = (len > 1) ? BURST_BIT | addr : addr;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            if (!cc1120_send_byte_receive_status(data[i])) {
+        for(i = 0; i < len - 1; i++) {
+            if (!cc1120_send_byte_receive_status(data[i], true)) {
                 status = false;
             }
         }
+
+         if (!cc1120_send_byte_receive_status(data[len-1], false)) 
+                status = false;
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -162,14 +169,14 @@ bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     if (status) {
         uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_EXT_ADDR : CC1120_REGS_EXT_ADDR;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
-        if (mcu_cc1120_spi_transfer(addr) != 0x00) {
+        if (mcu_cc1120_spi_transfer(addr, true) != 0x00) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_ext_addr_spi: CC1120 write ext addr failed\n");
             status = false;
         }
@@ -177,14 +184,17 @@ bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     
     if (status) {
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            if (!cc1120_send_byte_receive_status(data[i])) {
+        for(i = 0; i < len - 1; i++) {
+            if (!cc1120_send_byte_receive_status(data[i], true)) {
                 status = false;
             }
         }
+
+         if (!cc1120_send_byte_receive_status(data[len-1], false)) 
+                status = false;
     }
     
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -204,13 +214,13 @@ bool cc1120_strobe_spi(uint8_t addr) {
     }
 
     if (status) {
-        mcu_cc1120_cs_assert();    
-        if (!cc1120_send_byte_receive_status(addr)) {
+        // mcu_cc1120_cs_assert();    
+        if (!cc1120_send_byte_receive_status(addr, false)) {
             status = false;
         }
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -234,19 +244,22 @@ bool cc1120_read_fifo(uint8_t data[], uint8_t len) {
         uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
                                     R_BIT | CC1120_REGS_FIFO_ACCESS_STD;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            data[i] = mcu_cc1120_spi_transfer(0xFF);
+        for (i = 0; i < len - 1; i++) {
+            data[i] = mcu_cc1120_spi_transfer(0x00, true);
         }
+
+        data[len-1] = mcu_cc1120_spi_transfer(0x00, false);
     }
-    mcu_cc1120_cs_deassert();
+    
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -270,20 +283,22 @@ bool cc1120_write_fifo(uint8_t data[], uint8_t len) {
         uint8_t header = (len > 1) ? BURST_BIT | CC1120_REGS_FIFO_ACCESS_STD :
                                     CC1120_REGS_FIFO_ACCESS_STD;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            mcu_cc1120_spi_transfer(data[i]);
+        for(i = 0; i < len - 1; i++) {
+            mcu_cc1120_spi_transfer(data[i], true);
         }
+
+        mcu_cc1120_spi_transfer(data[len-1], false);
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -313,21 +328,23 @@ bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
         uint8_t header = (len > 1) ? R_BIT | BURST_BIT | CC1120_REGS_FIFO_ACCESS_DIR :
                                     R_BIT | CC1120_REGS_FIFO_ACCESS_DIR;
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
-        mcu_cc1120_spi_transfer(addr);
+        mcu_cc1120_spi_transfer(addr, true);
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            data[i] = mcu_cc1120_spi_transfer(0xff);
+        for(i = 0; i < len - 1; i++) {
+            data[i] = mcu_cc1120_spi_transfer(0x00, true);
         }
+
+        data[len-1] = mcu_cc1120_spi_transfer(0x00, false);
     }
 
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -358,20 +375,22 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
                                     CC1120_REGS_FIFO_ACCESS_DIR;
 
 
-        mcu_cc1120_cs_assert();
-        if (!cc1120_send_byte_receive_status(header)) {
+        // mcu_cc1120_cs_assert();
+        if (!cc1120_send_byte_receive_status(header, true)) {
             status = false;
         }
     }
 
     if (status) {
-        mcu_cc1120_spi_transfer(addr);
+        mcu_cc1120_spi_transfer(addr, true);
         uint8_t i;
-        for(i = 0; i < len; i++) {
-            mcu_cc1120_spi_transfer(data[i]);
+        for(i = 0; i < len - 1; i++) {
+            mcu_cc1120_spi_transfer(data[i], true);
         }
+
+        mcu_cc1120_spi_transfer(data[len-1], false);
     }
-    mcu_cc1120_cs_deassert();
+    // mcu_cc1120_cs_deassert();
     return status;
 }
 
@@ -379,16 +398,17 @@ bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
  * @brief - Reads the status register on the CC1120 and consecutively sends a byte over SPI.
  * 
  * @param data - The data to send to the status register.
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives.
  * @return true - If the status byte is valid.
  * @return false - If the status byte is invalid.
  */
-bool cc1120_send_byte_receive_status(uint8_t data) {
+bool cc1120_send_byte_receive_status(uint8_t data, bool csHold) {
     bool status = false;
     union cc_st ccstatus;
 
     uint8_t i;
     for (i = 1; i <= 5; i++) {
-        ccstatus.data = mcu_cc1120_spi_transfer(data);
+        ccstatus.data = mcu_cc1120_spi_transfer(data, csHold);
         if (ccstatus.ccst.chip_ready == 1) {
             mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_send_byte_receive_status: CC1120 chip not ready. Retrying... (%u/5)\n", i);
         } else {

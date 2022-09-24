@@ -4,6 +4,7 @@
 #include "cc1120_logging.h"
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum {
     CC1120_MCU_UNKNOWN = 0,
@@ -41,20 +42,9 @@ void mcu_file_log(cc1120_log_level_t level, char str[]);
  * @brief Simultaneously sends and receives a byte over CC1120 SPI interface
  * 
  * @param data - Data to transfer 
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives
  * @return uint8_t - Data received from CC1120
  */
-uint8_t mcu_cc1120_spi_transfer(uint8_t data);
-
-/**
- * @brief Calls the correct CS assert function based on the MCU selected.
- * 
- */
-void mcu_cc1120_cs_assert();
-
-/**
- * @brief Calls the correct CS deassert function based on the MCU selected.
- * 
- */
-void mcu_cc1120_cs_deassert();
+uint8_t mcu_cc1120_spi_transfer(uint8_t data, bool csHold);
 
 #endif /* CC1120_MCU_H */

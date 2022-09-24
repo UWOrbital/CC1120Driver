@@ -8,11 +8,11 @@ extern "C" {
 #include "cc1120_regs.h"
 #include <SPI.h>
 
-const uint8_t CC1120_RST = 9;
-const uint8_t CC1120_CS = 10;
-const uint8_t CC1120_MOSI = 11;
-const uint8_t CC1120_MISO = 12;
-const uint8_t CC1120_SCLK = 13;
+const uint8_t CC1120_RST = 48;
+const uint8_t CC1120_CS = 53;
+const uint8_t CC1120_MOSI = 51;
+const uint8_t CC1120_MISO = 50;
+const uint8_t CC1120_SCLK = 52;
 
 /**
  * @brief Set up the SPI pins and the CS pin, run E2E tests.
@@ -80,26 +80,13 @@ void arduino_serial_log(cc1120_log_level_t level, char str[]) {
  * @brief Simultaneously sends and receives a byte over CC1120 SPI interface
  * 
  * @param data - Data to transfer 
+ * @param csHold - Boolean that represents whether to hold CS low for consecutive sends and receives
  * @return uint8_t - Data received from CC1120
  */
-uint8_t arduino_cc1120_spi_transfer(uint8_t data) {
-    return SPI.transfer(data);
-}
-
-/**
- * @brief Pulls the CS pin low.
- * 
- */
-void arduino_cc1120_cs_assert() {
+uint8_t arduino_cc1120_spi_transfer(uint8_t data, bool csHold) {
     digitalWrite(CC1120_CS, LOW);
-    return;
-}
-
-/**
- * @brief Pulls the CS pin high.
- * 
- */
-void arduino_cc1120_cs_deassert() {
-    digitalWrite(CC1120_CS, HIGH);
-    return;
+    uint8_t readData = SPI.transfer(data);
+    if (!csHold) 
+        digitalWrite(CC1120_CS, HIGH);
+    return readData;
 }

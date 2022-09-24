@@ -32,21 +32,3 @@ uint8_t rm46_cc1120_spi_transfer(uint8_t data) {
     /* Fill in later */
     return 0;
 }
-
-/**
- * @brief Pulls the CS pin low.
- * 
- */
-void rm46_cc1120_cs_assert() {
-    /* Fill in later */
-    return;
-}
-
-/**
- * @brief Pulls the CS pin high.
- * 
- */
-void rm46_cc1120_cs_deassert() {
-    /* Fill in later */
-    return;
-}

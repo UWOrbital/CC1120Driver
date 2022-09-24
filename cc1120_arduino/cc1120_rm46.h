@@ -29,16 +29,4 @@ void rm46_file_log(cc1120_log_level_t level, char str[]);
  */
 uint8_t rm46_cc1120_spi_transfer(uint8_t data);
 
-/**
- * @brief Pulls the CS pin low.
- * 
- */
-void rm46_cc1120_cs_assert();
-
-/**
- * @brief Pulls the CS pin high.
- * 
- */
-void rm46_cc1120_cs_deassert();
-
 #endif /* CC1120_RM46_H */
