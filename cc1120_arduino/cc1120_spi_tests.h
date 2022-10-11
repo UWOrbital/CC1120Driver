@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "cc1120_spi.h"
+#include "cc1120_logging.h"
 
 /**
  * @brief E2E test for SPI read function.
