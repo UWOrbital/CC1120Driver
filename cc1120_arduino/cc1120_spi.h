@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "cc1120_logging.h"
 
 #define R_BIT 1 << 7
 #define BURST_BIT 1 << 6
@@ -24,10 +25,10 @@ union cc_st {
  * @param addr - The address of the first register to read.
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
- * @return true - If the read was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads from consecutive extended address space registers on the CC1120
@@ -35,10 +36,10 @@ bool cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len);
  * @param addr - The address of the first register to read.
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
- * @return true - If the read was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes to consecutive registers on the CC1120.
@@ -46,10 +47,10 @@ bool cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
  * @param addr - The address of the first register to write to.
  * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
- * @return true - If the write was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes to consecutive extended address space registers on the CC1120.
@@ -57,39 +58,39 @@ bool cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len);
  * @param addr - The address of the first register to write to.
  * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
- * @return true - If the write was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief Calls a strobe command on the CC1120.
  * 
  * @param addr - The address of the strobe command.
- * @return true - If the strobe command was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the strobe command was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_strobe_spi(uint8_t addr);
+cc1120_error_code cc1120_strobe_spi(uint8_t addr);
 
 /**
  * @brief - Reads consecutive registers from the FIFO memory.
  * 
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
- * @return true - If the read was successful.
- * @return false - If the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
+ * @return An error code - If the status byte is invalid.
  */
-bool cc1120_read_fifo(uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_read_fifo(uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes consecutive registers to the FIFO memory.
  * 
  * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
- * @return true - If the write was successful.
- * @return false - If the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
+ * @return An error code - If the status byte is invalid.
  */
-bool cc1120_write_fifo(uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_write_fifo(uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads consecutive registers directly from the FIFO on the CC1120.
@@ -97,10 +98,10 @@ bool cc1120_write_fifo(uint8_t data[], uint8_t len);
  * @param addr - The address of the first register to read. Range 0x00 - 0xFF.
  * @param data - The array to store the read data, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to read.
- * @return true - If the read was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Writes consecutive registers directly to the FIFO on the CC1120.
@@ -108,18 +109,18 @@ bool cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
  * @param addr - The address of the first register to write to. Range 0x00 - 0xFF.
  * @param data - The array of data to write to the registers, or a pointer to a single uint8_t if len=1.
  * @param len - The number of registers to write.
- * @return true - If the write was successful.
- * @return false - If the register is not valid, or the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
+ * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-bool cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
+cc1120_error_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len);
 
 /**
  * @brief - Reads the status register on the CC1120 and consecutively sends a byte over SPI.
  * 
  * @param data - The data to send to the status register.
- * @return true - If the status byte is valid.
- * @return false - If the status byte is invalid.
+ * @return CC1120_ERROR_CODE_SUCCESS - If the status byte is valid.
+ * @return CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE - If the status byte is invalid.
  */
-bool cc1120_send_byte_receive_status(uint8_t data);
+cc1120_error_code cc1120_send_byte_receive_status(uint8_t data);
 
 #endif /* CC1120_SPI_H */

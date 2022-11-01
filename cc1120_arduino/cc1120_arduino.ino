@@ -31,18 +31,28 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting E2E tests...");
-    bool status = true;
+    cc1120_error_code status;
     uint8_t i;
     for(i = 0; i < 3; i++) {
-        status &= cc1120_test_spi_strobe();
-        status &= cc1120_test_spi_read();
-        status &= cc1120_test_spi_write();
-        status &= cc1120_test_fifo_read_write();
-        if (status) {
+        status = cc1120_test_spi_strobe();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_spi_read();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_spi_write();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS)
+            status = cc1120_test_fifo_read_write();
+
+        if (status == CC1120_ERROR_CODE_SUCCESS) {
             Serial.println("All CC1120 tests passed. Resetting the chip...");
             break;
         } else {
-            Serial.print("CC1120 tests failed. Trying again... (");
+            Serial.print("CC1120 tests failed. ");
+            Serial.print("Error Code: ");
+            Serial.println(status);
+            Serial.print("Trying again... (");
             Serial.print(i+1);
             Serial.println("/3)");
 
@@ -52,7 +62,7 @@ void setup() {
         }
     }
 
-    if (!cc1120_strobe_spi(CC1120_STROBE_SRES)) {
+    if (cc1120_strobe_spi(CC1120_STROBE_SRES) != CC1120_ERROR_CODE_SUCCESS) {
         Serial.println("ERROR. CC1120 reset failed.");
     }
 }
