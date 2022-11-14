@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 
+#define RETURN_IF_ERROR(status) if (status != CC1120_ERROR_CODE_SUCCESS) return status;
+
 typedef enum {
     CC1120_LOG_LEVEL_OFF = 0,
     CC1120_LOG_LEVEL_FATAL,

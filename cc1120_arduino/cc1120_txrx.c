@@ -2,6 +2,7 @@
 #include "cc1120_logging.h"
 #include "cc1120_mcu.h"
 #include "cc1120_spi.h"
+#include <stdbool.h>
 
 registerSetting_t txSettingsStd[] = {
     { CC1120_REGS_IOCFG3,            0xB0U },
@@ -23,9 +24,9 @@ registerSetting_t txSettingsStd[] = {
     { CC1120_REGS_AGC_CFG0,          0xCFU },
     { CC1120_REGS_FIFO_CFG,          0x00U },
     { CC1120_REGS_FS_CFG,            0x14U },
-    { CC1120_REGS_PKT_CFG0,          0x20U },
+    { CC1120_REGS_PKT_CFG0,          0x00U },
     { CC1120_REGS_PA_CFG0,           0x7DU },
-    { CC1120_REGS_PKT_LEN,           0xFFU }
+    { CC1120_REGS_PKT_LEN,           0x0CU }
 };
 
 registerSetting_t txSettingsExt[] = {
@@ -79,43 +80,76 @@ cc1120_status_code cc1120_get_state(uint8_t *stateNum) {
  */
 cc1120_status_code cc1120_tx_init() {
     cc1120_status_code status;
-    for (uint8_t i=0; i<22; i++) {
+
+    for (uint8_t i=0; i<sizeof(txSettingsStd)/sizeof(registerSetting_t); i++) {
         status = cc1120_write_spi(txSettingsStd[i].addr, &txSettingsStd[i].val, 1);
-        if (status != CC1120_ERROR_CODE_SUCCESS)
-            break;
-    }
+        RETURN_IF_ERROR(status)
+    }        
 
-    if (status != CC1120_ERROR_CODE_SUCCESS)
-        return status;
-
-    for (uint8_t i=0; i<19; i++) {
-        cc1120_write_ext_addr_spi(txSettingsExt[i].addr, &txSettingsStd[i].val, 1);
-        if (status != CC1120_ERROR_CODE_SUCCESS)
-            break;
+    for (uint8_t i=0; i<sizeof(txSettingsExt)/sizeof(registerSetting_t); i++) {
+        status = cc1120_write_ext_addr_spi(txSettingsExt[i].addr, &txSettingsExt[i].val, 1);
+        RETURN_IF_ERROR(status)
     }
     
-    if (status != CC1120_ERROR_CODE_SUCCESS)
-        return status;
-
-    status = cc1120_strobe_spi(CC1120_STROBE_SFSTXON);
-    
-    return status;
+    return cc1120_strobe_spi(CC1120_STROBE_SFSTXON);
 }
 
 /**
  * @brief Adds the given data to the CC1120 FIFO buffer and transmits
  * 
- * @param data - A char array of data to transmit
- * @param len - The size of the provided array
+ * @param data - The packet to transmit
+ * @param len - The size of the provided packet in bytes
  * @return cc1120_status_code 
  */
-cc1120_status_code cc1120_send(unsigned char *data, uint32_t len) {
+cc1120_status_code cc1120_send(uint8_t *data, uint32_t len) {
     cc1120_status_code status;
     
-    status = cc1120_write_fifo(data, len);
-    if (status != CC1120_ERROR_CODE_SUCCESS)
-        return status;
+    if (len < 1) {
+        mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_send: Invalid data size!\n");
+        return CC1120_ERROR_CODE_WRITE_FIFO_INVALID_LENGTH;
+    }
+
+    bool largePacketFlag = false;
+
+    // See section 8.1.5
+    if (len > CC1120_MAX_PACKET_LEN) {
+        // Temporarily set packet size to infinite
+        uint8_t data = 0x40;
+        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &data, 1);
+        RETURN_IF_ERROR(status)
+
+        // Set packet length to mod(len, 256) so that the correct number of bits
+        // are sent when fixed packet mode gets reactivated
+        data = len % 256;
+        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &data, 1);
+        RETURN_IF_ERROR(status)
+        
+        largePacketFlag = true;
+    } else { // If packet size < 255, use variable packet length mode
+        // Set to variable packet length mode
+        uint8_t data = 0x20;
+        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &data, 1);
+        RETURN_IF_ERROR(status)
+
+        // Set max packet size
+        data = CC1120_MAX_PACKET_LEN;
+        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &data, 1);
+        RETURN_IF_ERROR(status)
+
+        // Write current packet size
+        uint8_t variableDataLen = (uint8_t) len;
+        status = cc1120_write_fifo(&variableDataLen, 1); // Write packet size
+        RETURN_IF_ERROR(status)
+    }
     
-    status = cc1120_strobe_spi(CC1120_STROBE_STX);
+    // Write packet
+    for (uint8_t i=0; i<len/CC1120_TX_FIFO_SIZE; i++) {
+        status = cc1120_write_fifo(data, len);
+        RETURN_IF_ERROR(status)
+
+        status = cc1120_strobe_spi(CC1120_STROBE_STX);
+        RETURN_IF_ERROR(status)
+    }
+    
     return status;
 }

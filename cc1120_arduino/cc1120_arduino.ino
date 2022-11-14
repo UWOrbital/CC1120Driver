@@ -95,8 +95,8 @@ void setup() {
 
     
     for (int i=0; i<100; i++) {
-        unsigned char testTxData[] = "Hello World";
-        status = cc1120_send(testTxData, 12);
+        uint8_t testTxData[] = "Hello World";
+        status = cc1120_send(testTxData, sizeof(testTxData)/sizeof(uint8_t));
         if (status) {
             Serial.print("Failed");
             Serial.println(status);

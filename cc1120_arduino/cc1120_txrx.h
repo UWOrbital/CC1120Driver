@@ -5,6 +5,9 @@
 #include "cc1120_regs.h"
 #include "cc1120_logging.h"
 
+#define CC1120_MAX_PACKET_LEN 255
+#define CC1120_TX_FIFO_SIZE 128
+
 typedef struct {
     uint8_t addr;
     uint8_t val;
