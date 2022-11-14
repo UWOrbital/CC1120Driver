@@ -106,7 +106,7 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len) {
     
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_send: Invalid data size!\n");
-        return CC1120_ERROR_CODE_WRITE_FIFO_INVALID_LENGTH;
+        return CC1120_ERROR_CODE_INVALID_PARAM;
     }
 
     bool largePacketFlag = false;

@@ -16,13 +16,13 @@ cc1120_status_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     
     if (addr >= CC1120_REGS_EXT_ADDR) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_spi: Not a valid register!\n");
-        status = CC1120_ERROR_CODE_READ_SPI_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_spi: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_READ_SPI_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
@@ -30,8 +30,8 @@ cc1120_status_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
         uint8_t header = (len > 1) ? (R_BIT | BURST_BIT | addr) : (R_BIT | addr);
 
         mcu_cc1120_cs_assert();
-        if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_READ_SPI_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -63,13 +63,13 @@ cc1120_status_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_
         (addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST) ||
         (addr > CC1120_REGS_EXT_FIFO_NUM_RXBYTES)) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_ext_addr_spi: Not a valid register!\n");
-        status = CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM; // invalid params
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_ext_addr_spi: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
     
@@ -79,8 +79,8 @@ cc1120_status_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_
                                      (R_BIT | CC1120_REGS_EXT_ADDR);
 
         mcu_cc1120_cs_assert();
-        if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_READ_EXT_ADDR_SPI_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -118,13 +118,13 @@ cc1120_status_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
 
     if(addr >= CC1120_REGS_EXT_ADDR) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_spi: Not a valid register!\n");
-        status = CC1120_ERROR_CODE_WRITE_SPI_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_spi: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_WRITE_SPI_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
@@ -132,8 +132,8 @@ cc1120_status_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
         uint8_t header = (len > 1) ? (BURST_BIT | addr) : addr;
 
         mcu_cc1120_cs_assert();
-        if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_WRITE_SPI_INVALID_STATUS_BYTE_HEADER;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -141,8 +141,8 @@ cc1120_status_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
     if (status == CC1120_ERROR_CODE_SUCCESS) {
         uint8_t i;
         for(i = 0; i < len; i++) {
-            if (cc1120_send_byte_receive_status(data[i]) != CC1120_ERROR_CODE_SUCCESS) {
-                status = CC1120_ERROR_CODE_WRITE_SPI_INVALID_STATUS_BYTE_DATA;
+            status = cc1120_send_byte_receive_status(data[i]);
+            if (status != CC1120_ERROR_CODE_SUCCESS) {
                 return status;
             }
         }
@@ -168,13 +168,13 @@ cc1120_status_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8
         (addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST) ||
         (addr > CC1120_REGS_EXT_FIFO_NUM_RXBYTES)) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_ext_addr_spi: Not a valid register!\n");
-        status = CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_ext_addr_spi: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
     
@@ -182,8 +182,8 @@ cc1120_status_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8
         uint8_t header = (len > 1) ? (BURST_BIT | CC1120_REGS_EXT_ADDR) : CC1120_REGS_EXT_ADDR;
 
         mcu_cc1120_cs_assert();
-        if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_STATUS_BYTE_HEADER;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -199,8 +199,8 @@ cc1120_status_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8
     if (status == CC1120_ERROR_CODE_SUCCESS) {
         uint8_t i;
         for(i = 0; i < len; i++) {
-            if (cc1120_send_byte_receive_status(data[i]) != CC1120_ERROR_CODE_SUCCESS) {
-                status = CC1120_ERROR_CODE_WRITE_EXT_ADDR_SPI_INVALID_STATUS_BYTE_DATA;
+            status = cc1120_send_byte_receive_status(data[i]);
+            if (status != CC1120_ERROR_CODE_SUCCESS) {
                 return status;
             }
         }
@@ -222,14 +222,14 @@ cc1120_status_code cc1120_strobe_spi(uint8_t addr) {
 
     if (addr < CC1120_STROBE_SRES || addr > CC1120_STROBE_SNOP) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_strobe_spi: Not a strobe register!\n");
-        status = CC1120_ERROR_CODE_STROBE_SPI_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (status == CC1120_ERROR_CODE_SUCCESS) {
         mcu_cc1120_cs_assert();    
-        if (cc1120_send_byte_receive_status(addr) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_STROBE_SPI_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(addr);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -251,7 +251,7 @@ cc1120_status_code cc1120_read_fifo(uint8_t data[], uint8_t len) {
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_fifo: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_READ_FIFO_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
@@ -261,7 +261,7 @@ cc1120_status_code cc1120_read_fifo(uint8_t data[], uint8_t len) {
 
         mcu_cc1120_cs_assert();
         if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_READ_FIFO_INVALID_STATUS_BYTE;
+            status = CC1120_ERROR_CODE_INVALID_PARAM;
             return status;
         }
     }
@@ -289,7 +289,7 @@ cc1120_status_code cc1120_write_fifo(uint8_t data[], uint8_t len) {
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_fifo: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_WRITE_FIFO_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
@@ -298,8 +298,8 @@ cc1120_status_code cc1120_write_fifo(uint8_t data[], uint8_t len) {
                                     CC1120_REGS_FIFO_ACCESS_STD;
 
         mcu_cc1120_cs_assert();
-        if (cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS) {
-            status = CC1120_ERROR_CODE_WRITE_FIFO_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -329,13 +329,13 @@ cc1120_status_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t
 
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_fifo_direct: Not a valid FIFO register!\n");
-        status = CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_REGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_fifo_direct: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
@@ -344,8 +344,8 @@ cc1120_status_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t
                                     (R_BIT | CC1120_REGS_FIFO_ACCESS_DIR);
 
         mcu_cc1120_cs_assert();
-        if ((cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS)) {
-            status = CC1120_ERROR_CODE_READ_FIFO_DIRECT_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(header);
+        if (status != CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -376,13 +376,13 @@ cc1120_status_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_
 
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_fifo_direct: Not a valid FIFO register!\n");
-        status = CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_RGISTER;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_fifo_direct: Not a valid length!\n");
-        status = CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_LENGTH;
+        status = CC1120_ERROR_CODE_INVALID_PARAM;
         return status;
     }
     
@@ -392,8 +392,8 @@ cc1120_status_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_
 
 
         mcu_cc1120_cs_assert();
-        if ((cc1120_send_byte_receive_status(header) != CC1120_ERROR_CODE_SUCCESS)) {
-            status = CC1120_ERROR_CODE_WRITE_FIFO_DIRECT_INVALID_STATUS_BYTE;
+        status = cc1120_send_byte_receive_status(header);
+        if (status!= CC1120_ERROR_CODE_SUCCESS) {
             return status;
         }
     }
@@ -417,7 +417,7 @@ cc1120_status_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_
  * @return CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE - If the status byte is invalid.
  */
 cc1120_status_code cc1120_send_byte_receive_status(uint8_t data) {
-    cc1120_status_code status = CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE;
+    cc1120_status_code status = CC1120_ERROR_CODE_INVALID_STATUS_BYTE;
     union cc_st ccstatus;
 
     uint8_t i;
