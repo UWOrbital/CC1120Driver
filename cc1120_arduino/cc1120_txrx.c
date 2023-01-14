@@ -114,26 +114,26 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len) {
     // See section 8.1.5
     if (len > CC1120_MAX_PACKET_LEN) {
         // Temporarily set packet size to infinite
-        uint8_t data = 0x40;
-        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &data, 1);
+        uint8_t temp = 0x40;
+        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &temp, 1);
         RETURN_IF_ERROR(status)
 
         // Set packet length to mod(len, 256) so that the correct number of bits
         // are sent when fixed packet mode gets reactivated
-        data = len % 256;
-        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &data, 1);
+        temp = len % 256;
+        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &temp, 1);
         RETURN_IF_ERROR(status)
         
         largePacketFlag = true;
     } else { // If packet size < 255, use variable packet length mode
         // Set to variable packet length mode
-        uint8_t data = 0x20;
-        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &data, 1);
+        uint8_t temp = 0x20;
+        status = cc1120_write_spi(CC1120_REGS_PKT_CFG0, &temp, 1);
         RETURN_IF_ERROR(status)
 
         // Set max packet size
-        data = CC1120_MAX_PACKET_LEN;
-        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &data, 1);
+        temp = CC1120_MAX_PACKET_LEN;
+        status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &temp, 1);
         RETURN_IF_ERROR(status)
 
         // Write current packet size
@@ -143,8 +143,9 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len) {
     }
     
     // Write packet
-    for (uint8_t i=0; i<len/CC1120_TX_FIFO_SIZE; i++) {
-        status = cc1120_write_fifo(data, len);
+    for (uint8_t i=0; i<len/CC1120_TX_FIFO_SIZE+1; i++) {
+        
+        status = cc1120_write_fifo(data + i*CC1120_TX_FIFO_SIZE, min(CC1120_TX_FIFO_SIZE, len - i*CC1120_TX_FIFO_SIZE));
         RETURN_IF_ERROR(status)
 
         status = cc1120_strobe_spi(CC1120_STROBE_STX);
