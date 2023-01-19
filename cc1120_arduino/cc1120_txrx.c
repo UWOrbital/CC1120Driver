@@ -3,6 +3,7 @@
 #include "cc1120_mcu.h"
 #include "cc1120_spi.h"
 #include <stdbool.h>
+#define min(a,b) (a < b ? a : b)
 
 registerSetting_t txSettingsStd[] = {
     { CC1120_REGS_IOCFG3,            0xB0U },
