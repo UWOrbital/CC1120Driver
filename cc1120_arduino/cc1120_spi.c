@@ -11,8 +11,8 @@
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
     
     if (addr >= CC1120_REGS_EXT_ADDR) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_spi: Not a valid register!\n");
@@ -56,8 +56,8 @@ cc1120_error_code cc1120_read_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if ((addr > CC1120_REGS_EXT_PA_CFG3 && addr < CC1120_REGS_EXT_WOR_TIME1) ||
         (addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST) ||
@@ -113,8 +113,8 @@ cc1120_error_code cc1120_read_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if(addr >= CC1120_REGS_EXT_ADDR) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_spi: Not a valid register!\n");
@@ -161,8 +161,8 @@ cc1120_error_code cc1120_write_spi(uint8_t addr, uint8_t data[], uint8_t len) {
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if ((addr > CC1120_REGS_EXT_PA_CFG3 && addr < CC1120_REGS_EXT_WOR_TIME1) ||
         (addr > CC1120_REGS_EXT_XOSC_TEST0 && addr < CC1120_REGS_EXT_RXFIRST) ||
@@ -217,8 +217,8 @@ cc1120_error_code cc1120_write_ext_addr_spi(uint8_t addr, uint8_t data[], uint8_
  * @return CC1120_ERROR_CODE_SUCCESS - If the strobe command was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_strobe_spi(uint8_t addr) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_strobe_spi(uint8_t addr) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if (addr < CC1120_STROBE_SRES || addr > CC1120_STROBE_SNOP) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_strobe_spi: Not a strobe register!\n");
@@ -246,8 +246,8 @@ cc1120_error_code cc1120_strobe_spi(uint8_t addr) {
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the status byte is invalid.
  */
-cc1120_error_code cc1120_read_fifo(uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_read_fifo(uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_fifo: Not a valid length!\n");
@@ -284,8 +284,8 @@ cc1120_error_code cc1120_read_fifo(uint8_t data[], uint8_t len) {
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the status byte is invalid.
  */
-cc1120_error_code cc1120_write_fifo(uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_write_fifo(uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if (len < 1) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_fifo: Not a valid length!\n");
@@ -324,8 +324,8 @@ cc1120_error_code cc1120_write_fifo(uint8_t data[], uint8_t len) {
  * @return CC1120_ERROR_CODE_SUCCESS - If the read was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_read_fifo_direct: Not a valid FIFO register!\n");
@@ -371,8 +371,8 @@ cc1120_error_code cc1120_read_fifo_direct(uint8_t addr, uint8_t data[], uint8_t 
  * @return CC1120_ERROR_CODE_SUCCESS - If the write was successful.
  * @return An error code - If the register is not valid, or the status byte is invalid.
  */
-cc1120_error_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
-    cc1120_error_code status = CC1120_ERROR_CODE_SUCCESS;
+cc1120_status_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t len) {
+    cc1120_status_code status = CC1120_ERROR_CODE_SUCCESS;
 
     if (addr < CC1120_FIFO_TX_START || addr > CC1120_FIFO_RX_END) {
         mcu_log(CC1120_LOG_LEVEL_ERROR, "cc1120_write_fifo_direct: Not a valid FIFO register!\n");
@@ -416,8 +416,8 @@ cc1120_error_code cc1120_write_fifo_direct(uint8_t addr, uint8_t data[], uint8_t
  * @return CC1120_ERROR_CODE_SUCCESS - If the status byte is valid.
  * @return CC1120_ERROR_CODE_SEND_BYTE_RECEIVE_STATUS_INVALID_STATUS_BYTE - If the status byte is invalid.
  */
-cc1120_error_code cc1120_send_byte_receive_status(uint8_t data) {
-    cc1120_error_code status = CC1120_ERROR_CODE_INVALID_STATUS_BYTE;
+cc1120_status_code cc1120_send_byte_receive_status(uint8_t data) {
+    cc1120_status_code status = CC1120_ERROR_CODE_INVALID_STATUS_BYTE;
     union cc_st ccstatus;
 
     uint8_t i;

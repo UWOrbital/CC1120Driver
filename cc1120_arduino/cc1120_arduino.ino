@@ -3,8 +3,10 @@
 extern "C" {
 #include "cc1120_spi.h"
 #include "cc1120_spi_tests.h"
+#include "cc1120_txrx.h"
 }
 
+#include "cc1120_logging.h"
 #include "cc1120_regs.h"
 #include <SPI.h>
 
@@ -31,7 +33,7 @@ void setup() {
     delay(1000);
 
     Serial.println("Starting E2E tests...");
-    cc1120_error_code status;
+    cc1120_status_code status;
     uint8_t i;
     for(i = 0; i < 3; i++) {
         status = cc1120_test_spi_strobe();
@@ -64,6 +66,47 @@ void setup() {
 
     if (cc1120_strobe_spi(CC1120_STROBE_SRES) != CC1120_ERROR_CODE_SUCCESS) {
         Serial.println("ERROR. CC1120 reset failed.");
+        return;
+    }
+
+    if (cc1120_tx_init() != CC1120_ERROR_CODE_SUCCESS) {
+        Serial.println("ERROR. TX initialization failed.");
+        return;
+    }
+
+
+    uint8_t stateNum;
+    uint8_t numPackets;
+    cc1120_get_state(&stateNum);
+    Serial.print("State number: ");
+    Serial.println(stateNum);
+    cc1120_get_packets_in_tx_fifo(&numPackets);
+    Serial.print("Num packets in TX FIFO: ");
+    Serial.println(numPackets);
+
+    Serial.print("Sending 'Hello World' in 3..");
+    delay(1000);
+    Serial.print(" 2...");
+    delay(1000);
+    Serial.println(" 1...");
+
+    
+    for (int i=0; i<100; i++) {
+        uint8_t testTxData[] = "Hello World";
+        status = cc1120_send(testTxData, sizeof(testTxData)/sizeof(uint8_t));
+        if (status) {
+            Serial.print("Failed");
+            Serial.println(status);
+        }
+    
+        cc1120_get_state(&stateNum);
+        Serial.print("State number: ");
+        Serial.println(stateNum);
+        cc1120_get_packets_in_tx_fifo(&numPackets);
+        Serial.print("Num packets in TX FIFO: ");
+        Serial.println(numPackets);
+
+        delay(1000);
     }
 }
 
