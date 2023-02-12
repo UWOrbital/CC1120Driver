@@ -10,9 +10,6 @@ extern "C" {
 #include "cc1120_regs.h"
 #include <SPI.h>
 
-cc1120_log_level_t CC1120_FILE_LOG_LEVEL = CC1120_LOG_LEVEL_OFF;
-cc1120_log_level_t CC1120_SERIAL_LOG_LEVEL = CC1120_LOG_LEVEL_DEBUG;
-
 const uint8_t CC1120_RST = 49;
 const uint8_t CC1120_CS = 53;
 const uint8_t CC1120_MOSI = 51;
