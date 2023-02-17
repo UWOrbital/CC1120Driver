@@ -8,12 +8,17 @@
 #define CC1120_MAX_PACKET_LEN 255
 #define CC1120_TX_FIFO_SIZE 128
 
+#define min(a, b) (a < b ? a : b)
+
 typedef struct
 {
     uint8_t addr;
     uint8_t val;
 } registerSetting_t;
 
+void initRxSemaphore(void)
+
+void initTxSemaphore(void);
 /**
  * @brief Gets the number of packets queued in the TX FIFO
  *
@@ -35,7 +40,7 @@ cc1120_status_code cc1120_get_state(uint8_t *stateNum);
  *
  * @return cc1120_status_code - Whether or not the setup was a success
  */
-cc1120_status_code cc1120_tx_init();
+cc1120_status_code cc1120_txrx_init();
 
 /**
  * @brief Adds the given data to the CC1120 FIFO buffer and transmits
@@ -48,5 +53,7 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len);
 
 /* RX functions */
 cc1120_status_code cc1120_get_packets_in_rx_fifo(uint8_t *numPackets);
+
+cc1120_status_code cc1120_rx_start();
 
 #endif /* CC1120_TXRX_H */

@@ -72,7 +72,7 @@ void setup() {
         return;
     }
 
-    if (cc1120_tx_init() != CC1120_ERROR_CODE_SUCCESS) {
+    if (cc1120_txrx_init() != CC1120_ERROR_CODE_SUCCESS) {
         Serial.println("ERROR. TX initialization failed.");
         return;
     }
