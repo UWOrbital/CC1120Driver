@@ -10,7 +10,9 @@
 #include <stdbool.h>
 
 static SemaphoreHandle_t rxSemaphore = NULL;
+static StaticSemaphore_t rxSemaphoreBuffer;
 static SemaphoreHandle_t txSemaphore = NULL;
+static StaticSemaphore_t txSemaphoreBuffer;
 
 registerSetting_t cc1120SettingsStd[] = {
     {CC1120_REGS_IOCFG3, 0xB0U},
@@ -66,13 +68,13 @@ registerSetting_t cc1120SettingsExt[] = {
 
 void initRxSemaphore(void) {
     if(rxSemaphore == NULL) {
-        rxSemaphore = xSemaphoreCreateBinary();
+        rxSemaphore = xSemaphoreCreateBinaryStatic(&rxSemaphoreBuffer);
     }
 }
 
 void initTxSemaphore(void) {
     if(txSemaphore == NULL) {
-        txSemaphore = xSemaphoreCreateBinary();
+        txSemaphore = xSemaphoreCreateBinaryStatic(&txSemaphoreBuffer);
     }
 }
 
@@ -105,7 +107,7 @@ cc1120_status_code cc1120_get_state(uint8_t *stateNum)
  *
  * @return cc1120_status_code - Whether or not the setup was a success
  */
-cc1120_status_code cc1120_txrx_init()
+cc1120_status_code cc1120_init()
 {
     cc1120_status_code status;
 
@@ -198,7 +200,7 @@ cc1120_status_code cc1120_get_packets_in_rx_fifo(uint8_t *numPackets)
     return cc1120_read_ext_addr_spi(CC1120_REGS_EXT_NUM_RXBYTES, numPackets, 1);
 }
 
-cc1120_status_code cc1120_rx_start()
+cc1120_status_code cc1120_receive()
 {
     cc1120_status_code status;
     uint8_t data[278];
