@@ -52,8 +52,20 @@ cc1120_status_code cc1120_init();
 cc1120_status_code cc1120_send(uint8_t *data, uint32_t len);
 
 /* RX functions */
+/**
+ * @brief Gets the number of packets queued in the TX FIFO
+ *
+ * @param numPackets - A pointer to an 8-bit integer to store the number of packets in
+ * @return cc1120_status_code - Whether or not the register read was successful
+ */
 cc1120_status_code cc1120_get_packets_in_rx_fifo(uint8_t *numPackets);
 
-cc1120_status_code cc1120_receive();
+/**
+ * @brief Switches the cc1120 to RX mode to receive 278 bytes
+ *
+ * @param data - an array of 8-bit data with size of atleast 278 where received data is stored
+ * @return cc1120_status_code
+ */
+cc1120_status_code cc1120_receive(uint8_t data[]);
 
 #endif /* CC1120_TXRX_H */

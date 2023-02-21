@@ -155,7 +155,7 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len)
 
         // Set packet length to mod(len, 256) so that the correct number of bits
         // are sent when fixed packet mode gets reactivated
-        temp = len % 256;
+        temp = len % 100;
         status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &temp, 1);
         RETURN_IF_ERROR(status)
 
@@ -180,7 +180,11 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len)
     }
 
     // Write packet
-    for (uint8_t i = 0; i < len / CC1120_TX_FIFO_SIZE + 1; i++)
+    status = cc1120_write_fifo(data, min(CC1120_TX_FIFO_SIZE, len));
+    RETURN_IF_ERROR(status);
+    status = cc1120_strobe_spi(CC1120_STROBE_STX);
+    RETURN_IF_ERROR(status);
+    for (uint8_t i = 0; i < (len - CC1120_TX_FIFO_SIZE) / 100; i++)
     {
 
         status = cc1120_write_fifo(data + i * CC1120_TX_FIFO_SIZE, min(CC1120_TX_FIFO_SIZE, len - i * CC1120_TX_FIFO_SIZE));
@@ -195,15 +199,26 @@ cc1120_status_code cc1120_send(uint8_t *data, uint32_t len)
 
 /* RX functions */
 
+/**
+ * @brief Gets the number of packets queued in the RX FIFO
+ *
+ * @param numPackets - A pointer to an 8-bit integer to store the number of packets in
+ * @return cc1120_status_code - Whether or not the register read was successful
+ */
 cc1120_status_code cc1120_get_packets_in_rx_fifo(uint8_t *numPackets)
 {
     return cc1120_read_ext_addr_spi(CC1120_REGS_EXT_NUM_RXBYTES, numPackets, 1);
 }
 
-cc1120_status_code cc1120_receive()
+/**
+ * @brief Switches the cc1120 to RX mode to receive 278 bytes
+ *
+ * @param data - an array of 8-bit data with size of atleast 278 where received data is stored
+ * @return cc1120_status_code
+ */
+cc1120_status_code cc1120_receive(uint8_t data[])
 {
     cc1120_status_code status;
-    uint8_t data[278];
 
     // Temporarily set packet size to infinite
     uint8_t temp = 0x40;
@@ -211,15 +226,16 @@ cc1120_status_code cc1120_receive()
     RETURN_IF_ERROR(status)
 
     // Set packet length to 78 so that the correct number of bits
-    // are sent when fixed packet mode gets reactivated
-    status = cc1120_write_spi(CC1120_REGS_PKT_LEN, 78, 1);
+    // are received when fixed packet mode gets reactivated
+    temp = 78;
+    status = cc1120_write_spi(CC1120_REGS_PKT_LEN, &temp, 1);
     RETURN_IF_ERROR(status)
     status = cc1120_strobe_spi(CC1120_STROBE_SRX);
     RETURN_IF_ERROR(status);
     if(rxSemaphore != NULL) {
         for (int i = 0; i < 2; ++i){
             if(xSemaphoreTake(rxSemaphore, portMAX_DELAY) == pdTRUE){
-                status = cc1120_read_fifo(data, 100);
+                status = cc1120_read_fifo(data + 100*i, 100);
                 RETURN_IF_ERROR(status);
             }
         }
@@ -229,7 +245,7 @@ cc1120_status_code cc1120_receive()
         RETURN_IF_ERROR(status)
 
         if(xSemaphoreTake(rxSemaphore, portMAX_DELAY) == pdTRUE){
-            status = cc1120_read_fifo(data, 78);
+            status = cc1120_read_fifo(data + 200, 78);
             RETURN_IF_ERROR(status);
         }
     }
